@@ -6,20 +6,29 @@ spring:
   devtools:
     add-properties: false
   datasource:
-    url: "jdbc:postgresql://localhost:5432/invoice_management"
-    username: "admin"
-    password: "secret"
-    driverClassName: "org.postgresql.Driver"
+    postgresql:
+      url: "jdbc:postgresql://localhost:5432/invoice_management"
+      username: "admin"
+      password: "secret"
+      driverClassName: "org.postgresql.Driver"
+    oracle:
+      url: "jdbc:oracle:thin:@localhost:1521/FREEPDB1"
+      username: "adminuser"
+      password: "adminpass"
+      driverClassName: "oracle.jdbc.OracleDriver"
   jpa:
-    hibernate:
-      ddl-auto: "update"
-    databasePlatform: "org.hibernate.dialect.PostgreSQLDialect"
-  h2:
-    console:
-      enabled: false
-      path: "/h2"
-  profiles:
-    include: null
+      hibernate:
+        ddl-auto: "update"
+      postgresql:
+        databasePlatform: "org.hibernate.dialect.PostgreSQLDialect"
+      oracle:
+        databasePlatform: org.hibernate.dialect.OracleDialect
+      h2:
+        console:
+          enabled: false
+          path: "/h2"
+      profiles:
+        include: null
 management:
   endpoints:
     web:
