@@ -1,7 +1,29 @@
+version: '3.8'
+
 services:
+  oracle:
+    container_name: oracle_invoice_management
+    image: gvenzl/oracle-xe:21-slim-faststart
+    restart: always
+    environment:
+      - ORACLE_PASSWORD=oracle123
+      - APP_USER=adminuser
+      - APP_USER_PASSWORD=adminpass
+    ports:
+      - "1521:1521"
+    volumes:
+      - ./oracle:/container-entrypoint-initdb.d
+    shm_size: 1g
+    healthcheck:
+      test: ["CMD", "bash", "-c", "echo 'SELECT 1 FROM DUAL;' | /opt/oracle/product/21c/dbhomeXE/bin/sqlplus -s system/oracle123@//localhost:1521/FREEPDB1 > /dev/null 2>&1"]
+      interval: 30s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
   postgres:
     container_name: postgresql_invoice_management
-    image: postgres:15
+    image: postgres:15-alpine
     restart: always
     environment:
       POSTGRES_USER: admin
@@ -11,6 +33,9 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    depends_on:
+      oracle:
+        condition: service_healthy
 
 volumes:
   postgres_data:
