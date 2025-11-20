@@ -2,6 +2,8 @@ package co.com.management.api.dto.mappers;
 
 import co.com.management.api.dto.models.response.ClientResponseDTO;
 import co.com.management.api.dto.models.response.ClientResponseFullDTO;
+import co.com.management.api.dto.models.response.PageResultDTO;
+import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 import lombok.experimental.UtilityClass;
 
@@ -12,6 +14,7 @@ public class ResponseMapper {
                 .id(client.getId())
                 .firstName(client.getFirstName())
                 .lastName(client.getLastName())
+                .state(client.getState())
                 .documentType(client.getDocumentType())
                 .documentNumber(client.getDocumentNumber())
                 .email(client.getEmail())
@@ -27,11 +30,24 @@ public class ResponseMapper {
         return  ClientResponseDTO.builder()
                 .firstName(client.getFirstName())
                 .lastName(client.getLastName())
+                .state(client.getState())
                 .documentType(client.getDocumentType())
                 .documentNumber(client.getDocumentNumber())
                 .email(client.getEmail())
                 .phone(client.getPhone())
                 .address(client.getAddress())
                 .build();
+    }
+
+    public PageResultDTO<ClientResponseFullDTO> toPageResultDTO(PageResult<Client> pageResult){
+        return new PageResultDTO<ClientResponseFullDTO> (
+                pageResult.getItems().stream().map(ResponseMapper::responseFull).toList(),
+                pageResult.getPage(),
+                pageResult.getSize(),
+                pageResult.getTotalItems(),
+                pageResult.getTotalPages(),
+                pageResult.isHasNext(),
+                pageResult.isHasPrevious()
+        );
     }
 }

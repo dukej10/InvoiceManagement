@@ -18,6 +18,7 @@ public class Client {
     private UUID id;
     private String documentNumber;
     private String documentType;
+    private Boolean state;
     private String firstName;
     private String lastName;
     private String email;

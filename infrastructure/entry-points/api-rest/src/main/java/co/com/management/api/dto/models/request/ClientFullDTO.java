@@ -1,16 +1,18 @@
 package co.com.management.api.dto.models.request;
 
-import co.com.management.model.invoice.Invoice;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter
-public class ClientDTO {
+public class ClientFullDTO {
+
+    @NotNull
+    private UUID id;
 
     @NotBlank
     private String documentNumber;

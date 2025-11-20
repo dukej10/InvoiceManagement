@@ -41,6 +41,8 @@ public class ClientDao {
     @Column(length = 100, nullable = false)
     private String lastName;
 
+    private Boolean state;
+
     @Column(length = 100, nullable = false)
     private String email;
 

@@ -1,11 +1,15 @@
 package co.com.management.jpa.persistence.client;
 
 import co.com.management.jpa.helper.AdapterOperations;
+import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 import co.com.management.model.client.gateways.ClientRepository;
 import org.reactivecommons.utils.ObjectMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Repository;
 
+import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -33,18 +37,43 @@ public class ClientRepositoryImpl extends AdapterOperations<Client, ClientDao, U
     }
 
     @Override
-    public Boolean deleteClient(UUID id) {
-        Client client = super.findById(id);
-        if(Objects.isNull(client)){
+    public Client deleteClient(UUID id) {
+        Client client = findById(id);
+        if(Objects.nonNull(client)){
             repository.deleteById(id);
-            return true;
+            return client;
         }
-        return false;
+        return null;
     }
 
     @Override
-    public Client findById() {
-        return null;
+    public Client findById(UUID id) {
+        return super.findById(id);
+    }
+
+    @Override
+    public Client findByDocumentNumberAndDocumentType(String documentNumber, String documentType) {
+        ClientDao client = repository.findByDocumentNumberAndDocumentType(documentNumber, documentType).orElse(null);
+        return this.toEntity(client);
+
+    }
+
+    @Override
+    public PageResult<Client> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<ClientDao> clientsDao = repository.findAll(pageable);
+        List<Client> clients = clientsDao.getContent().stream()
+                .map(this::toEntity)
+                .toList();
+        return new PageResult<>(
+                clients,
+                clientsDao.getNumber(),
+                clientsDao.getSize(),
+                clientsDao.getTotalElements(),
+                clientsDao.getTotalPages(),
+                clientsDao.hasNext(),
+                clientsDao.hasPrevious()
+        );
     }
 
 }
