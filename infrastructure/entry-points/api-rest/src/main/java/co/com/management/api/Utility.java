@@ -10,7 +10,6 @@ public class Utility {
 
     private static final Map<Integer, String> MESSAGE_MAP = Map.of(
             200, "Operación exitosa",
-            201, "Creado correctamente",
             400, "Solicitud inválida",
             404, "Recurso no encontrado",
             500, "Error interno en el servidor"
