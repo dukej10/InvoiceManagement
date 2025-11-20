@@ -33,19 +33,13 @@ public class InvoiceDao {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID code;
 
-    @Column(name="expiration_date")
-    private LocalDate expDate;
-
-    @Column(length = 11, nullable = false)
-    private String status;
-
-    @Column(nullable = false)
+    @Column(name="total_amount",nullable = false)
     private Double totalAmount;
 
     @OneToMany(mappedBy = "invoice")
     List<ProductDao> products;
 
-    @JoinColumn(name="client_id")
+    @Column(name="client_id")
     UUID clientId;
 
     @Column(name= "created_at")

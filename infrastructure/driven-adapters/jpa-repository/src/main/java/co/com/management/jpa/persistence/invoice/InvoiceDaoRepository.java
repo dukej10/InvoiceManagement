@@ -9,5 +9,5 @@ import java.util.UUID;
 
 public interface InvoiceDaoRepository extends JpaRepository<InvoiceDao, UUID>
 {
-    Page<InvoiceDao> findAllByIdClient(UUID idClient, Pageable pageable);
+    Page<InvoiceDao> findAllByClientId(UUID clientId, Pageable pageable);
 }

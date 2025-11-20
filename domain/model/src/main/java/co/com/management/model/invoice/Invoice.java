@@ -18,8 +18,6 @@ import java.util.UUID;
 @Builder(toBuilder = true)
 public class Invoice {
     private UUID code;
-    private LocalDate expDate;
-    private String status;
     private Double totalAmount;
     private List<Product> products;
     private LocalDateTime createdDate;

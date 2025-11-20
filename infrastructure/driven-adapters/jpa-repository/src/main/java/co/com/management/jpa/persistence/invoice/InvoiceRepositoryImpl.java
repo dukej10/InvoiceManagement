@@ -33,7 +33,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
     @Override
     public PageResult<Invoice> getAllByIdCliente(UUID id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<InvoiceDao> invoicesFound = repository.findAllByIdClient(id, pageable);
+        Page<InvoiceDao> invoicesFound = repository.findAllByClientId(id, pageable);
         List<Invoice> invoices = invoicesFound.getContent().stream()
                 .map(this::toEntity)
                 .toList();
@@ -63,10 +63,9 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
                 invoicesFound.hasNext(),
                 invoicesFound.hasPrevious()
         );    }
-    }
 
     @Override
     public Invoice registerInvoice(Invoice invoice) {
-        return null;
+        return Invoice.builder().build();
     }
 }

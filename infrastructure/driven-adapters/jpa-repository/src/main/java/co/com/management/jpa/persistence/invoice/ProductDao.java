@@ -26,13 +26,13 @@ public class ProductDao {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID code;
 
-    @Column(length = 11, nullable = false)
+    @Column(name = "name_product", length = 11, nullable = false)
     private String name;
 
     @Column(length = 11, nullable = false)
     private Integer quantity;
 
-    @Column(length = 100, nullable = false)
+    @Column(name = "unit_price",length = 100, nullable = false)
     private Double unitPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -27,7 +27,7 @@ public class InvoiceUseCase {
     }
 
     public PageResult<Invoice> getAllByIdCliente(UUID idClient, int size, int page) {
-        Client clientFound = clientUseCase.getClientById(id);
+        Client clientFound = clientUseCase.getClientById(idClient);
         if(Objects.nonNull(clientFound)) throw new DataFoundException("El cliente");
         try {
             return invoiceRepository.getAllByIdCliente(idClient, size, page);
@@ -37,7 +37,7 @@ public class InvoiceUseCase {
         }
     }
 
-    public PageResult<Invoice> getAllInvoices(int size, int page) {
+    public PageResult<Invoice> getAllInvoices(UUID idClient, int size, int page) {
         try {
             return invoiceRepository.getAllByIdCliente(idClient, size, page);
         }catch (Exception e) {
