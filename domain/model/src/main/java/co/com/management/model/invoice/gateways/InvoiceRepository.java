@@ -3,6 +3,7 @@ package co.com.management.model.invoice.gateways;
 import co.com.management.model.invoice.Invoice;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface InvoiceRepository {
     Invoice saveInvoice(Invoice invoice);
@@ -11,6 +12,6 @@ public interface InvoiceRepository {
 
     Boolean deleteInvoice();
 
-    Invoice findById();
+    Invoice findById(UUID id);
 }
 
