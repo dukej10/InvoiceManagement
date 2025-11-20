@@ -1,6 +1,5 @@
 package co.com.management.jpa.persistence.client;
 
-import co.com.management.model.client.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
