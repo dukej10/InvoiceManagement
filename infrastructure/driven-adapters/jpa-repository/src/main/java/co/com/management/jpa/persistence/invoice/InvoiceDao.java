@@ -1,6 +1,5 @@
 package co.com.management.jpa.persistence.invoice;
 
-import co.com.management.jpa.persistence.ProductDao;
 import co.com.management.jpa.persistence.client.ClientDao;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -46,9 +45,8 @@ public class InvoiceDao {
     @OneToMany(mappedBy = "invoice")
     List<ProductDao> products;
 
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="client_id")
-    ClientDao client;
+    UUID clientId;
 
     @Column(name= "created_at")
     private LocalDateTime createdDate;

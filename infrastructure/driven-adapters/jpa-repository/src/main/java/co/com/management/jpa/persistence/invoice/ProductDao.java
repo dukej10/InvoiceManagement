@@ -1,6 +1,5 @@
-package co.com.management.jpa.persistence;
+package co.com.management.jpa.persistence.invoice;
 
-import co.com.management.jpa.persistence.invoice.InvoiceDao;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

@@ -52,9 +52,6 @@ public class ClientDao {
     @Column(length = 100, nullable = false)
     private String address;
 
-    @OneToMany(mappedBy = "client")
-    private List<InvoiceDao> invoices;
-
     @Column(name= "created_at")
     private LocalDateTime createdDate;
 
