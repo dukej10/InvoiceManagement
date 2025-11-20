@@ -34,13 +34,13 @@ public class InvoiceDao {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID code;
 
-    @Column(length = 11, nullable = false)
+    @Column(name="expiration_date")
     private LocalDate expDate;
 
     @Column(length = 11, nullable = false)
     private String status;
 
-    @Column(length = 11, nullable = false)
+    @Column(nullable = false)
     private Double totalAmount;
 
     @OneToMany(mappedBy = "invoice")
@@ -50,12 +50,11 @@ public class InvoiceDao {
     @JoinColumn(name="client_id")
     ClientDao client;
 
-    @Column(length = 11, nullable = false)
+    @Column(name= "created_at")
     private LocalDateTime createdDate;
 
-    @Column(length = 11, nullable = false)
+    @Column(name= "updated_at")
     private LocalDateTime updatedDate;
-
 
     @PrePersist
     public void prePersist() {

@@ -33,7 +33,7 @@ public class ProductDao {
     @Column(length = 11, nullable = false)
     private Integer quantity;
 
-    @Column(length = 11, nullable = false)
+    @Column(length = 100, nullable = false)
     private Double unitPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)

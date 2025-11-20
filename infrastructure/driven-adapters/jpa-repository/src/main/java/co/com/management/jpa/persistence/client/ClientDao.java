@@ -29,34 +29,34 @@ public class ClientDao {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    @Column(length = 11, nullable = false)
+    @Column(length = 100, nullable = false)
     private String documentNumber;
 
-    @Column(length = 11, nullable = false)
+    @Column(length = 100, nullable = false)
     private String documentType;
 
-    @Column(length = 11, nullable = false)
+    @Column(length = 100, nullable = false)
     private String firstName;
 
-    @Column(length = 11, nullable = false)
+    @Column(length = 100, nullable = false)
     private String lastName;
 
-    @Column(length = 11, nullable = false)
+    @Column(length = 100, nullable = false)
     private String email;
 
-    @Column(length = 11, nullable = false)
+    @Column(length = 100, nullable = false)
     private String phone;
 
-    @Column(length = 11, nullable = false)
+    @Column(length = 100, nullable = false)
     private String address;
 
     @OneToMany(mappedBy = "client")
     private List<InvoiceDao> invoices;
 
-    @Column(length = 11, nullable = false)
+    @Column(name= "created_at")
     private LocalDateTime createdDate;
 
-    @Column(length = 11, nullable = false)
+    @Column(name= "updated_at")
     private LocalDateTime updatedDate;
 
     @PrePersist
