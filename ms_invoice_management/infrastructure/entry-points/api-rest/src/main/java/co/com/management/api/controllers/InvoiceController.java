@@ -13,10 +13,15 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/invoice", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -29,7 +34,28 @@ public class InvoiceController {
     public ResponseEntity<?> save(@Valid @RequestBody InvoiceDTO invoiceDTO) {
         var client = invoiceUseCase.saveInvoice(RequestMapper.toModel(invoiceDTO), invoiceDTO.getClientId());
         return ResponseEntity.status(HttpStatus.CREATED).body(
-                client
+                Utility.structureRS(client, HttpStatus.OK.value())
+        );
+    }
+
+    @GetMapping(path = "/all")
+    public ResponseEntity<?> getAll(@RequestParam(name = "size", defaultValue = "1") int size,
+                                    @RequestParam(name = "page", defaultValue = "0") int page){
+        var client = invoiceUseCase.getAllInvoices(page,size);
+        var response = ResponseMapper.toPageResultInvoiceDTO(client);
+        return ResponseEntity.status(HttpStatus.FOUND).body(
+                Utility.structureRS(response, HttpStatus.OK.value())
+        );
+    }
+
+    @GetMapping(path = "/allByClient/{clientId}")
+    public ResponseEntity<?> getAllByClient(@PathVariable("clientId") UUID clientId,
+                                            @RequestParam(name = "size", defaultValue = "1") int size,
+                                            @RequestParam(name = "page", defaultValue = "0") int page){
+        var client = invoiceUseCase.getAllByClientId(clientId, page, size);
+        var response = ResponseMapper.toPageResultInvoiceDTO(client);
+        return ResponseEntity.status(HttpStatus.FOUND).body(
+                Utility.structureRS(response, HttpStatus.OK.value())
         );
     }
 

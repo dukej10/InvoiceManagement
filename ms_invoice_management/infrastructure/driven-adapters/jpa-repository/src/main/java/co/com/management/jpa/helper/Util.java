@@ -1,5 +1,7 @@
 package co.com.management.jpa.helper;
 
+import co.com.management.jpa.persistence.invoice.InvoiceDao;
+import co.com.management.jpa.persistence.invoice.ProductDao;
 import co.com.management.model.PageResult;
 import co.com.management.model.ProductInfo;
 import co.com.management.model.client.Client;
@@ -56,4 +58,26 @@ public class Util {
         );
     }
 
+    public Invoice toModel(InvoiceDao invoiceDao) {
+        return Invoice.builder()
+                .code(invoiceDao.getCode())
+                .clientId(invoiceDao.getClientId())
+                .createdDate(invoiceDao.getCreatedDate())
+                .totalAmount(invoiceDao.getTotalAmount())
+                .products(
+                        invoiceDao.getProducts().stream()
+                                .map(Util::toModel
+                                ).toList()
+                )
+                .build();
+    }
+
+private Product toModel(ProductDao productDao) {
+    return Product.builder()
+            .code(productDao.getCode())
+            .name(productDao.getName())
+            .quantity(productDao.getQuantity())
+            .unitPrice(productDao.getUnitPrice())
+            .build();
+}
 }

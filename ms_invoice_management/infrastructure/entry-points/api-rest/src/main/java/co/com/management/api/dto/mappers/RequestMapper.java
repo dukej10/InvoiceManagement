@@ -27,8 +27,6 @@ public class RequestMapper {
 
     public Invoice toModel(InvoiceDTO invoiceDTO){
         return Invoice.builder()
-                .documentNumber(invoiceDTO.getDocumentNumber())
-                .documentType(invoiceDTO.getDocumentType())
                 .products(
                         invoiceDTO.getProducts().stream()
                                 .map(RequestMapper::toModel)

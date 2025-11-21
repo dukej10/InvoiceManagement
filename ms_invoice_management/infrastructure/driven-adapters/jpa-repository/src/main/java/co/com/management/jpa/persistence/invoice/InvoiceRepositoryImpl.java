@@ -3,6 +3,7 @@ package co.com.management.jpa.persistence.invoice;
 import co.com.management.jpa.helper.AdapterOperations;
 import co.com.management.jpa.helper.Util;
 import co.com.management.model.PageResult;
+import co.com.management.model.ProductInfo;
 import co.com.management.model.client.Client;
 import co.com.management.model.invoice.Invoice;
 import co.com.management.model.invoice.gateways.InvoiceRepository;
@@ -17,9 +18,7 @@ import org.springframework.jdbc.core.SqlOutParameter;
 import org.springframework.jdbc.core.SqlParameter;
 import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 import org.springframework.stereotype.Repository;
-import co.com.management.model.ProductInfo;
-import java.math.BigDecimal;
-import java.sql.Timestamp;
+
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -67,20 +66,27 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
     public PageResult<Invoice> getAllByClientId(String id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<InvoiceDao> invoicesFound = repository.findAllByClientId(id, pageable);
-        List<Invoice> invoices = invoicesFound.getContent().stream()
-                .map(this::toEntity)
-                .toList();
+        List<Invoice> invoices = getInvoices(invoicesFound);
         return Util.structureResponse(invoices, invoicesFound);
+    }
+
+    private List<Invoice> getInvoices(Page<InvoiceDao> invoicesFound) {
+        return invoicesFound.getContent().stream()
+                .map(Util::toModel)
+                .toList();
     }
 
     @Override
     public PageResult<Invoice> getAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size);
-        Page<InvoiceDao> invoicesFound = repository.findAll(pageable);
-        List<Invoice> invoices = invoicesFound.getContent().stream()
-                .map(this::toEntity)
-                .toList();
-        return Util.structureResponse(invoices, invoicesFound);
+        try {
+            Pageable pageable = PageRequest.of(page, size);
+            Page<InvoiceDao> invoicesFound = repository.findAll(pageable);
+            List<Invoice> invoices = getInvoices(invoicesFound);
+            return Util.structureResponse(invoices, invoicesFound);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error retrieving invoices: " + e.getMessage(), e);
+        }
     }
 
 

@@ -36,7 +36,7 @@ public class InvoiceDao {
     @Column(name="total_amount",nullable = false)
     private Double totalAmount;
 
-    @OneToMany(mappedBy = "invoice")
+    @OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER)
     List<ProductDao> products;
 
     @Column(name="client_id", length = 36)

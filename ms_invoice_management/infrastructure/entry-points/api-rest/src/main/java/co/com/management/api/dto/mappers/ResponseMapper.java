@@ -2,10 +2,16 @@ package co.com.management.api.dto.mappers;
 
 import co.com.management.api.dto.models.response.ClientResponseDTO;
 import co.com.management.api.dto.models.response.ClientResponseFullDTO;
+import co.com.management.api.dto.models.response.InvoiceResponseDTO;
 import co.com.management.api.dto.models.response.PageResultDTO;
+import co.com.management.api.dto.models.response.ProductResponseDTO;
 import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
+import co.com.management.model.invoice.Invoice;
+import co.com.management.model.product.Product;
 import lombok.experimental.UtilityClass;
+
+import java.util.UUID;
 
 @UtilityClass
 public class ResponseMapper {
@@ -39,9 +45,40 @@ public class ResponseMapper {
                 .build();
     }
 
-    public PageResultDTO<ClientResponseFullDTO> toPageResultDTO(PageResult<Client> pageResult){
+    public InvoiceResponseDTO response(Invoice invoice){
+        return  InvoiceResponseDTO.builder()
+                .code(UUID.fromString(invoice.getCode()))
+                .clientId(UUID.fromString(invoice.getClientId()))
+                .products(invoice.getProducts().stream()
+                        .map(ResponseMapper::responseFull).toList())
+                .createdDate(invoice.getCreatedDate())
+                .build();
+    }
+
+    private ProductResponseDTO responseFull(Product product){
+        return ProductResponseDTO.builder()
+                .code(product.getCode())
+                .name(product.getName())
+                .quantity(product.getQuantity())
+                .unitPrice(product.getUnitPrice())
+                .build();
+    }
+
+    public PageResultDTO<ClientResponseFullDTO> toPageResultClientDTO(PageResult<Client> pageResult){
         return new PageResultDTO<ClientResponseFullDTO> (
                 pageResult.getItems().stream().map(ResponseMapper::responseFull).toList(),
+                pageResult.getPage(),
+                pageResult.getSize(),
+                pageResult.getTotalItems(),
+                pageResult.getTotalPages(),
+                pageResult.isHasNext(),
+                pageResult.isHasPrevious()
+        );
+    }
+
+    public PageResultDTO<InvoiceResponseDTO> toPageResultInvoiceDTO(PageResult<Invoice> pageResult){
+        return new PageResultDTO<InvoiceResponseDTO> (
+                pageResult.getItems().stream().map(ResponseMapper::response).toList(),
                 pageResult.getPage(),
                 pageResult.getSize(),
                 pageResult.getTotalItems(),
