@@ -31,7 +31,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
         implements InvoiceRepository {
 
     private final JdbcTemplate jdbcTemplate;
-    private SimpleJdbcCall simpleJdbcCall;
+    private  final SimpleJdbcCall simpleJdbcCall;
 
 
 
@@ -41,11 +41,11 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
             return mapper.map(d, Invoice.class);
         });
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcCall = initSimpleJdbCall(jdbcTemplate);
     }
 
-    @PostConstruct
-    private void init() {
-        this.simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate)
+    private SimpleJdbcCall initSimpleJdbCall(JdbcTemplate jdbcTemplate) {
+        return new SimpleJdbcCall(jdbcTemplate)
                 .withSchemaName("INVOICE")
                 .withProcedureName("INSERT_INVOICE")
                 .withoutProcedureColumnMetaDataAccess()
