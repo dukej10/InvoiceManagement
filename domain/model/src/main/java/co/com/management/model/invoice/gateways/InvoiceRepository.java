@@ -1,6 +1,7 @@
 package co.com.management.model.invoice.gateways;
 
 import co.com.management.model.PageResult;
+import co.com.management.model.client.Client;
 import co.com.management.model.invoice.Invoice;
 
 import java.util.List;
@@ -16,6 +17,6 @@ public interface InvoiceRepository {
 
     Invoice findById(UUID id);
 
-    Invoice registerInvoice(Invoice invoice);
+    Invoice registerInvoice(Invoice invoice, Client client);
 }
 

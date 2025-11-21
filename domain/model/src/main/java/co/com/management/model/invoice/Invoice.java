@@ -19,7 +19,8 @@ import java.util.UUID;
 public class Invoice {
     private UUID code;
     private Double totalAmount;
+    private String documentNumber;
+    private String documentType;
     private List<Product> products;
     private LocalDateTime createdDate;
-    private LocalDateTime updatedDate;
 }

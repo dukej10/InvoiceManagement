@@ -45,16 +45,4 @@ public class InvoiceDao {
     @Column(name= "created_at")
     private LocalDateTime createdDate;
 
-    @Column(name= "updated_at")
-    private LocalDateTime updatedDate;
-
-    @PrePersist
-    public void prePersist() {
-        createdDate = LocalDateTime.now();
-    }
-
-    @PreUpdate
-    public void preUpdate() {
-        updatedDate = LocalDateTime.now();
-    }
 }

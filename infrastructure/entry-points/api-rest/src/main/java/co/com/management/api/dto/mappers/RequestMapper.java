@@ -2,7 +2,11 @@ package co.com.management.api.dto.mappers;
 
 import co.com.management.api.dto.models.request.ClientDTO;
 import co.com.management.api.dto.models.request.ClientFullDTO;
+import co.com.management.api.dto.models.request.InvoiceDTO;
+import co.com.management.api.dto.models.request.ProductDTO;
 import co.com.management.model.client.Client;
+import co.com.management.model.invoice.Invoice;
+import co.com.management.model.product.Product;
 import lombok.experimental.UtilityClass;
 
 @UtilityClass
@@ -18,6 +22,26 @@ public class RequestMapper {
                 .documentType(clientDTO.getDocumentType())
                 .lastName(clientDTO.getLastName())
                 .firstName(clientDTO.getFirstName())
+                .build();
+    }
+
+    public Invoice toModel(InvoiceDTO invoiceDTO){
+        return Invoice.builder()
+                .documentNumber(invoiceDTO.getDocumentNumber())
+                .documentType(invoiceDTO.getDocumentType())
+                .products(
+                        invoiceDTO.getProducts().stream()
+                                .map(RequestMapper::toModel)
+                                .toList()
+                )
+                .build();
+    }
+
+    private Product toModel(ProductDTO productDTO){
+        return Product.builder()
+                .name(productDTO.getName())
+                .unitPrice(productDTO.getUnitPrice())
+                .quantity(productDTO.getQuantity())
                 .build();
     }
 
