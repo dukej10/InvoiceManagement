@@ -30,8 +30,8 @@ import java.util.UUID;
 public class InvoiceDao {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID code;
+    @Column(length = 36)
+    private String code;
 
     @Column(name="total_amount",nullable = false)
     private Double totalAmount;
@@ -39,8 +39,8 @@ public class InvoiceDao {
     @OneToMany(mappedBy = "invoice")
     List<ProductDao> products;
 
-    @Column(name="client_id")
-    UUID clientId;
+    @Column(name="client_id", length = 36)
+    String clientId;
 
     @Column(name= "created_at")
     private LocalDateTime createdDate;

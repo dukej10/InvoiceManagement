@@ -7,7 +7,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.UUID;
 
-public interface InvoiceDaoRepository extends JpaRepository<InvoiceDao, UUID>
+public interface InvoiceDaoRepository extends JpaRepository<InvoiceDao, String>
 {
-    Page<InvoiceDao> findAllByClientId(UUID clientId, Pageable pageable);
+    Page<InvoiceDao> findAllByClientId(String clientId, Pageable pageable);
 }

@@ -52,6 +52,7 @@ import java.util.Properties;
 
     }
 
+    @Primary
     @Bean(name = "oracleEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
             @Qualifier("oracleDataSource") DataSource dataSource,

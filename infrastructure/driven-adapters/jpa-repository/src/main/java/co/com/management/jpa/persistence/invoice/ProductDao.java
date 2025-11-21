@@ -23,8 +23,7 @@ import java.util.UUID;
 public class ProductDao {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID code;
+    private String code;
 
     @Column(name = "name_product", length = 11, nullable = false)
     private String name;
@@ -33,7 +32,7 @@ public class ProductDao {
     private Integer quantity;
 
     @Column(name = "unit_price",length = 100, nullable = false)
-    private Double unitPrice;
+    private Float unitPrice;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="invoice_id")

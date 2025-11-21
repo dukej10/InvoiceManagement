@@ -13,8 +13,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Product {
-    private UUID code;
+    private String code;
     private String name;
     private Integer quantity;
-    private Double unitPrice;
+    private Float unitPrice;
 }

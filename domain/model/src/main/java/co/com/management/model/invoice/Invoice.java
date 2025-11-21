@@ -17,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Invoice {
-    private UUID code;
+    private String code;
     private Double totalAmount;
     private String documentNumber;
     private String documentType;

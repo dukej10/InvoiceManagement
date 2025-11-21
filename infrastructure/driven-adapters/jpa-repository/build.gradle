@@ -1,11 +1,15 @@
 dependencies {
     implementation project(':model')
-
-
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.reactivecommons.utils:object-mapper-api:0.1.0'
 
     runtimeOnly 'org.postgresql:postgresql'
-    runtimeOnly 'com.oracle.database.jdbc:ojdbc11:23.1.0.0'
+
+    // ← VERSIÓN CORREGIDA: 23.5.0.0 NO EXISTE, usa 23.5.0.24.07 (estable y compatible con Spring Boot 3.x)
+    implementation 'com.oracle.database.jdbc:ojdbc11:23.5.0.24.07'
+
+    // Opcional: Universal Connection Pool (ayuda con unwrap, pero no obligatorio)
+    // implementation 'com.oracle.database.jdbc:ucp11:23.5.0.24.07'
+
     testImplementation 'org.reactivecommons.utils:object-mapper:0.1.0'
 }

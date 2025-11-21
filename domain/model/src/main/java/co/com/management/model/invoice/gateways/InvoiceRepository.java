@@ -11,11 +11,11 @@ public interface InvoiceRepository {
 
     List<Invoice> getAll();
 
-    PageResult<Invoice> getAllByIdCliente(UUID id, int page, int size);
+    PageResult<Invoice> getAllByClientId(String id, int page, int size);
 
     PageResult<Invoice> getAll(int page, int size);
 
-    Invoice findById(UUID id);
+    Invoice findById(String id);
 
     Invoice registerInvoice(Invoice invoice, Client client);
 }
