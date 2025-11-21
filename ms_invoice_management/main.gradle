@@ -21,8 +21,6 @@ subprojects {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    //build.dependsOn 'pitest'
-
     test {
         useJUnitPlatform()
     }
@@ -38,11 +36,14 @@ subprojects {
     }
 
 
-    test.finalizedBy(project.tasks.jacocoTestReport)
+    test.finalizedBy jacocoTestReport
+    jacocoTestReport.dependsOn test
+    jacocoTestReport.finalizedBy 'pitest'
 
     pitest {
-        targetClasses = ['co.com.management.*']
-        excludedClasses = []
+        targetClasses = ['co.com.management.**']
+        excludedClasses = ['co.com.management.model.**', 'co.com.management.api.dto.models.**', 'co.com.management.api.config.**', 'co.com.management.jpa.config.**',
+                           'co.com.management.config.**']
         excludedTestClasses = []
         pitestVersion = '1.20.6'
         verbose = false
@@ -59,7 +60,18 @@ subprojects {
     }
 
     jacocoTestReport {
-        dependsOn test, 'pitest'
+        dependsOn test
+        afterEvaluate {
+            classDirectories.setFrom files(classDirectories.files.collect {
+                fileTree(dir: it, excludes: [
+                    'co/com/management/model/**',
+                    'co/com/management/api/dto/models/**',
+                    'co/com/management/api/config/**',
+                    'co/com/management/jpa/config/**',
+                    'co/com/management/config/**'
+                ])
+            })
+        }
         reports {
             xml.setRequired true
             xml.setOutputLocation layout.buildDirectory.file("reports/jacoco.xml")
@@ -76,15 +88,31 @@ jacoco {
 }
 
 tasks.register('jacocoMergedReport', JacocoReport) {
-    dependsOn = [test, subprojects.jacocoTestReport, pitestReportAggregate]
-    additionalSourceDirs.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
-    sourceDirectories.setFrom files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories.setFrom files(subprojects.sourceSets.main.output)
-    executionData.setFrom project.fileTree(dir: '.', include: '**/build/jacoco/test.exec')
+    dependsOn subprojects.jacocoTestReport
+
+    sourceDirectories.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+    additionalSourceDirs.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+
+    executionData.from = files(subprojects.jacocoTestReport.executionData).filter { it.exists() }
+
+    def allClassDirs = files()
+    subprojects.each { proj ->
+        allClassDirs.from(proj.sourceSets.main.output)
+    }
+
+    classDirectories.from = allClassDirs.filter { it.exists() }.asFileTree.matching {
+        exclude 'co/com/management/model/**'
+        exclude 'co/com/management/api/dto/models/**'
+        exclude 'co/com/management/api/config/**'
+        exclude 'co/com/management/jpa/config/**'
+    }
+
     reports {
-        xml.setRequired true
-        csv.setRequired false
-        html.setRequired true
+        xml.required = true
+        xml.outputLocation = file("$buildDir/reports/jacoco/report.xml")
+        html.required = true
+        html.outputLocation = file("$buildDir/reports/jacoco/html")
+        csv.required = false
     }
 }
 
@@ -116,4 +144,16 @@ pitestReportAggregate {
 
 tasks.named('wrapper') {
     gradleVersion = '8.14.3'
+}
+
+tasks.register('pitestAll') {
+    dependsOn = subprojects.collect { it.tasks.findByName('pitest') }.findAll { it != null }
+}
+
+pitestReportAggregate {
+    dependsOn pitestAll
+}
+
+tasks.register('quality') {
+    dependsOn 'clean', 'test', 'pitestAll', 'pitestReportAggregate', 'jacocoMergedReport'
 }
