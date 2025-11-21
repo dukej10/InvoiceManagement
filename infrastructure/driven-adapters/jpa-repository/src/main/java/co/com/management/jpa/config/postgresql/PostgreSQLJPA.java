@@ -27,7 +27,6 @@ import java.util.Properties;
         transactionManagerRef = "postgresTransactionManager"
 )public class PostgreSQLJPA {
 
-    @Primary
     @Bean(name = "sqlDBSecret")
     public DBSecret dbSecret(Environment env) {
         return DBSecret.builder()
@@ -37,9 +36,8 @@ import java.util.Properties;
                 .build();
     }
 
-    @Bean
-    @Primary
-    public DataSource datasource(DBSecret secret,
+    @Bean(name = "postgresDataSource")
+    public DataSource datasource(@Qualifier("sqlDBSecret") DBSecret secret,
                                  @Value("${spring.datasource.postgresql.driverClassName}") String driverClass) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(secret.getUrl());
@@ -49,10 +47,9 @@ import java.util.Properties;
         return new HikariDataSource(config);
     }
 
-    @Bean
-    @Primary
+    @Bean(name = "postgresEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
-            DataSource dataSource,
+            @Qualifier("postgresDataSource")DataSource dataSource,
             @Value("${spring.jpa.postgresql.databasePlatform}") String dialect) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
@@ -69,8 +66,7 @@ import java.util.Properties;
         return em;
     }
 
-    @Bean
-    @Primary
+    @Bean(name = "postgresTransactionManager")
     public PlatformTransactionManager postgresTransactionManager(
             @Qualifier("postgresEntityManagerFactory") EntityManagerFactory emf) {
         return new JpaTransactionManager(emf);

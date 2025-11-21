@@ -12,9 +12,9 @@ spring:
       password: "secret"
       driverClassName: "org.postgresql.Driver"
     oracle:
-      url: "jdbc:oracle:thin:@localhost:1521/FREEPDB1"
-      username: "adminuser"
-      password: "adminpass"
+      url: "jdbc:oracle:thin:@localhost:1521/INVOICE_DB"
+      username: "INVOICE"
+      password: "ADMINPASSWORD"
       driverClassName: "oracle.jdbc.OracleDriver"
   jpa:
       hibernate:
