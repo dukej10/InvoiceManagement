@@ -4,6 +4,8 @@ import co.com.management.jpa.helper.AdapterOperations;
 import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 import co.com.management.model.client.gateways.ClientRepository;
+import co.com.management.model.exception.DataFoundException;
+import co.com.management.model.exception.NoDataFoundException;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -27,7 +29,7 @@ public class ClientRepositoryImpl extends AdapterOperations<Client, ClientDao, U
 
     @Override
     public Client saveClient(Client client) {
-        return super.save(client);
+        return toEntity(repository.save(toData(client)));
     }
 
 
@@ -48,7 +50,8 @@ public class ClientRepositoryImpl extends AdapterOperations<Client, ClientDao, U
 
     @Override
     public Client findById(UUID id) {
-        return super.findById(id);
+        return repository.findById(id).map(this::toEntity)
+                .orElseThrow(NoDataFoundException::new);
     }
 
     @Override

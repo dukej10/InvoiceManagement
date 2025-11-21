@@ -23,12 +23,11 @@ import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
-    // 1️⃣ Manejo de validaciones de DTOs @Valid
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(
             MethodArgumentNotValidException ex,
             HttpHeaders headers,
-            HttpStatusCode status,  // ✅ CAMBIAR A HttpStatusCode
+            HttpStatusCode status,
             WebRequest request) {
 
         List<ErrorResponse.FieldError> fieldErrors = ex.getBindingResult()
@@ -49,7 +48,7 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST);
     }
 
-    // 🧩 Maneja errores de validación en parámetros o servicios
+   
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Object> handleValidationError(ConstraintViolationException exception) {
         List<Map<String, String>> errors = exception.getConstraintViolations()
@@ -65,7 +64,6 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
         );
     }
 
-    // 3️⃣ Manejo de excepciones personalizadas
     @ExceptionHandler({NoDataFoundException.class, GeneralException.class, DataFoundException.class})
     public ResponseEntity<ResponseDTO<ErrorResponse>> handleCustomException(
             RuntimeException ex, WebRequest request) {
@@ -81,7 +79,6 @@ public class ControllerExceptionHandler extends ResponseEntityExceptionHandler {
                 HttpStatus.BAD_REQUEST);
     }
 
-    //  Manejo de cualquier otra excepción global
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResponseDTO<ErrorResponse>> handleGlobalException(Exception ex, WebRequest request) {
 

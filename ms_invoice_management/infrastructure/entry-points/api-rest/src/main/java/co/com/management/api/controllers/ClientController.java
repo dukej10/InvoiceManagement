@@ -69,7 +69,7 @@ public class ClientController {
     @GetMapping(path = "/all")
     public ResponseEntity<?> getAll(@RequestParam("size") int size, @RequestParam("page") int page){
         var client = clientUseCase.getAll(size,page);
-        var response = ResponseMapper.toPageResultDTO(client);
+        var response = ResponseMapper.toPageResultClientDTO(client);
         return ResponseEntity.status(HttpStatus.FOUND).body(
                 Utility.structureRS(response, HttpStatus.OK.value())
         );
