@@ -45,14 +45,4 @@ public class InvoiceUseCase {
 
         }
     }
-
-    /**
-    private Client getClient(UUID id) {
-        if(Objects.nonNull(id)) {
-            return clientUseCase.getClientById(id);
-        } else {
-            return clientUseCase.findByInfoDocument(documentNumber, documentType);
-        }
-    }
-     **/
 }

@@ -23,6 +23,7 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 @Repository
@@ -78,15 +79,10 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
 
     @Override
     public PageResult<Invoice> getAll(int page, int size) {
-        try {
-            Pageable pageable = PageRequest.of(page, size);
-            Page<InvoiceDao> invoicesFound = repository.findAll(pageable);
-            List<Invoice> invoices = getInvoices(invoicesFound);
-            return Util.structureResponse(invoices, invoicesFound);
-
-        } catch (Exception e) {
-            throw new RuntimeException("Error retrieving invoices: " + e.getMessage(), e);
-        }
+        Pageable pageable = PageRequest.of(page, size);
+        Page<InvoiceDao> invoicesFound = repository.findAll(pageable);
+        List<Invoice> invoices = getInvoices(invoicesFound);
+        return Util.structureResponse(invoices, invoicesFound);
     }
 
 
@@ -97,6 +93,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
         String invoiceCode = UUID.randomUUID().toString();
         invoice.setCode(invoiceCode);
         invoice.setTotalAmount(100.0);
+        invoice.setClientId(client.getId().toString());
         LocalDateTime now = LocalDateTime.now();
         invoice.setCreatedDate(now);
         try {
@@ -112,5 +109,22 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
 
         return invoice;
     }
+
+    @Override
+    public Invoice deleteInvoice(String id) {
+        Invoice invoice = findById(id);
+        if(Objects.nonNull(invoice)){
+            repository.deleteById(id);
+            return invoice;
+        }
+        return null;
+    }
+
+    @Override
+    public Invoice findByClientId(String id){
+       InvoiceDao invoiceDao = repository.findByClientId(id).orElse(null);
+        return this.toEntity(invoiceDao);
+    }
+
 
 }

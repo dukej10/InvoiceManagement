@@ -11,5 +11,9 @@ public interface InvoiceRepository {
     PageResult<Invoice> getAll(int page, int size);
 
     Invoice registerInvoice(Invoice invoice, Client client);
+
+    Invoice deleteInvoice(String id);
+
+    Invoice findByClientId(String id);
 }
 

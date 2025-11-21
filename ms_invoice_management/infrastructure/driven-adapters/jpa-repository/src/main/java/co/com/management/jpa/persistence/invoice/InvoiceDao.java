@@ -1,6 +1,7 @@
 package co.com.management.jpa.persistence.invoice;
 
 import co.com.management.jpa.persistence.client.ClientDao;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,7 +37,7 @@ public class InvoiceDao {
     @Column(name="total_amount",nullable = false)
     private Double totalAmount;
 
-    @OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "invoice", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     List<ProductDao> products;
 
     @Column(name="client_id", length = 36)
