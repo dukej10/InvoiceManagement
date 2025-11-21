@@ -9,8 +9,6 @@ import java.util.UUID;
 
 public interface InvoiceRepository {
 
-    List<Invoice> getAll();
-
     PageResult<Invoice> getAllByClientId(String id, int page, int size);
 
     PageResult<Invoice> getAll(int page, int size);

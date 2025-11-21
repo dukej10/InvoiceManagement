@@ -46,7 +46,7 @@ public class ClientUseCase {
         }
     }
 
-    private Client findByInfoDocument(String documentNumber, String documentType){
+    public Client findByInfoDocument(String documentNumber, String documentType){
         try {
             return clientRepository.findByDocumentNumberAndDocumentType(documentNumber, documentType);
         } catch (Exception e) {
