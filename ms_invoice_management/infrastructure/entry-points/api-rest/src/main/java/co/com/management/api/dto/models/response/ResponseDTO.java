@@ -1,10 +1,6 @@
 package co.com.management.api.dto.models.response;
 
-import co.com.management.model.invoice.Invoice;
-
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.UUID;
 
 public record ResponseDTO<T>(
         T data,

@@ -12,7 +12,6 @@ import co.com.management.model.product.Product;
 import co.com.management.model.product.ProductItem;
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 

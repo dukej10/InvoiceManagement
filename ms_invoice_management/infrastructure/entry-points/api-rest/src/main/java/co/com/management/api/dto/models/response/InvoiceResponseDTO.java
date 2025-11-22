@@ -1,8 +1,5 @@
 package co.com.management.api.dto.models.response;
 
-import co.com.management.api.dto.models.request.ProductDTO;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;

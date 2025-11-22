@@ -28,7 +28,6 @@ public class ResponseMapper {
                 .address(client.getAddress())
                 .createdDate(client.getCreatedDate())
                 .updatedDate(client.getUpdatedDate())
-                //.invoices()
                 .build();
     }
 

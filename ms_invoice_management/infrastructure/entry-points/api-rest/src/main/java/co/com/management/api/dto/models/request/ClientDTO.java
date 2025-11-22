@@ -1,12 +1,9 @@
 package co.com.management.api.dto.models.request;
 
-import co.com.management.model.invoice.Invoice;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter

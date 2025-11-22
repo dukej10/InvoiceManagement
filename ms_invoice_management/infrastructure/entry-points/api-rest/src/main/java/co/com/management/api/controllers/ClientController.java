@@ -1,14 +1,14 @@
 package co.com.management.api.controllers;
+
 import co.com.management.api.Utility;
+import co.com.management.api.dto.mappers.RequestMapper;
 import co.com.management.api.dto.mappers.ResponseMapper;
 import co.com.management.api.dto.models.request.ClientDTO;
-import co.com.management.api.dto.mappers.RequestMapper;
 import co.com.management.api.dto.models.request.ClientFullDTO;
 import co.com.management.usecase.client.ClientUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@RequestMapping(value = "/client", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/client", produces = "application/json")
 @RequiredArgsConstructor
 public class ClientController {
 
@@ -58,7 +58,7 @@ public class ClientController {
 
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<?> findByInfoDoc(@PathVariable("id") UUID id){
+    public ResponseEntity<?> findById(@PathVariable("id") UUID id){
         var client = clientUseCase.getClientById(id);
         var response = ResponseMapper.response(client);
         return ResponseEntity.status(HttpStatus.FOUND).body(
@@ -70,6 +70,15 @@ public class ClientController {
     public ResponseEntity<?> getAll(@RequestParam("size") int size, @RequestParam("page") int page){
         var client = clientUseCase.getAll(size,page);
         var response = ResponseMapper.toPageResultClientDTO(client);
+        return ResponseEntity.status(HttpStatus.FOUND).body(
+                Utility.structureRS(response, HttpStatus.OK.value())
+        );
+    }
+
+    @GetMapping(path = "/byInfoDoc")
+    public ResponseEntity<?> getByInfoDoc(@RequestParam("num") String num, @RequestParam("type") String type){
+        var client = clientUseCase.findByInfoDocument(num,type);
+        var response = ResponseMapper.responseFull(client);
         return ResponseEntity.status(HttpStatus.FOUND).body(
                 Utility.structureRS(response, HttpStatus.OK.value())
         );

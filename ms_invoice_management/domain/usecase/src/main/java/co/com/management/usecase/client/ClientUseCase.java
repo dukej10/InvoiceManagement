@@ -4,7 +4,6 @@ import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 import co.com.management.model.client.gateways.ClientRepository;
 import co.com.management.model.exception.DataFoundException;
-import co.com.management.model.exception.GeneralException;
 import co.com.management.model.exception.NoDataFoundException;
 import co.com.management.model.invoice.Invoice;
 import co.com.management.model.invoice.gateways.InvoiceRepository;
