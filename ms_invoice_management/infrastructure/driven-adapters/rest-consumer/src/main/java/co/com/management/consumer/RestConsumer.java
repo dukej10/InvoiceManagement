@@ -2,7 +2,7 @@ package co.com.management.consumer;
 
 import co.com.management.consumer.dto.AmountRequestDTO;
 import co.com.management.consumer.dto.AmountResponseDTO;
-import co.com.management.consumer.mapper.ResponseMapper;
+import co.com.management.consumer.mapper.RMapper;
 import co.com.management.model.calculatedinvoice.CalculatedInvoice;
 import co.com.management.model.calculatedinvoice.gateways.CalculatedInvoiceRepository;
 import co.com.management.model.invoice.Invoice;
@@ -18,14 +18,14 @@ import org.springframework.web.client.RestClient;
 public class RestConsumer implements CalculatedInvoiceRepository {
 
     private final RestClient restClient;
-    private final ResponseMapper responseMapper;
+    private final RMapper rMapper;
 
     @Override
     @CircuitBreaker(name = "externalInvoiceService", fallbackMethod = "fallbackCalculateInvoice")
     public Invoice calculateInvoice(CalculatedInvoice request) {
         log.info("Calculando factura para cliente: {}", request.getClientId());
 
-        AmountRequestDTO dtoRequest = responseMapper.toDTO(request);
+        AmountRequestDTO dtoRequest = rMapper.toDTO(request);
 
         AmountResponseDTO response = restClient
                 .post()
@@ -37,7 +37,7 @@ public class RestConsumer implements CalculatedInvoiceRepository {
 
         log.info("Cálculo exitoso. Total: {}", response.getData().getTotalAmount());
 
-        return responseMapper.toCalculatedInvoice(response, request.getClientId());
+        return rMapper.toCalculatedInvoice(response, request.getClientId());
     }
 
     public Invoice fallbackCalculateInvoice(CalculatedInvoice request, Throwable throwable) {

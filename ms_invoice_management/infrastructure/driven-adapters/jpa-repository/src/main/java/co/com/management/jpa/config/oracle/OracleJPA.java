@@ -42,7 +42,7 @@ import java.util.Properties;
 
     @Bean(name = "oracleDataSource")
     public DataSource oracleDataSource(@Qualifier("oracleDBSecret") DBSecret secret,
-                                       @Value("${spring.datasource.oracle.driverClassName}") String driverClass) {
+                                       @Value("${spring.datasource.oracle.driver-class-name}") String driverClass) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(secret.getUrl());
         config.setUsername(secret.getUsername());
@@ -56,7 +56,7 @@ import java.util.Properties;
     @Bean(name = "oracleEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean oracleEntityManagerFactory(
             @Qualifier("oracleDataSource") DataSource dataSource,
-            @Value("${spring.jpa.oracle.databasePlatform}") String dialect) {
+            @Value("${spring.jpa.oracle.database-platform}") String dialect) {
 
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);

@@ -38,7 +38,7 @@ import java.util.Properties;
 
     @Bean(name = "postgresDataSource")
     public DataSource datasource(@Qualifier("sqlDBSecret") DBSecret secret,
-                                 @Value("${spring.datasource.postgresql.driverClassName}") String driverClass) {
+                                 @Value("${spring.datasource.postgresql.driver-class-name}") String driverClass) {
         HikariConfig config = new HikariConfig();
         config.setJdbcUrl(secret.getUrl());
         config.setUsername(secret.getUsername());
@@ -50,7 +50,7 @@ import java.util.Properties;
     @Bean(name = "postgresEntityManagerFactory")
     public LocalContainerEntityManagerFactoryBean postgresEntityManagerFactory(
             @Qualifier("postgresDataSource")DataSource dataSource,
-            @Value("${spring.jpa.postgresql.databasePlatform}") String dialect) {
+            @Value("${spring.jpa.postgresql.database-platform}") String dialect) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
         em.setPackagesToScan("co.com.management.jpa");
