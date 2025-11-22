@@ -1,5 +1,5 @@
 from typing import List
-from infrastructure.entry_points.api.dto.product_dto import ProductDTO
+from src.infrastructure.entry_points.api.dto.product_dto import ProductDTO
 from pydantic import BaseModel, Field, validator
 from uuid import UUID
 
