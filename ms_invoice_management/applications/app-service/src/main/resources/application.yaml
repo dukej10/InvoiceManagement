@@ -1,42 +1,44 @@
 server:
-  port: 8080
+  port: ${SERVER_PORT:8080}
+
 spring:
   application:
-    name: "InvoiceManagement"
+    name: InvoiceManagement
   devtools:
     add-properties: false
+
   datasource:
     postgresql:
-      url: "jdbc:postgresql://localhost:5432/invoice_management"
-      username: "admin"
-      password: "secret"
-      driverClassName: "org.postgresql.Driver"
+      url: ${DB_POSTGRES_URL:jdbc:postgresql://localhost:5432/invoice_management}
+      username: ${DB_POSTGRES_USER:admin}
+      password: ${DB_POSTGRES_PASS:secret}
+      driver-class-name: org.postgresql.Driver
+
     oracle:
-      url: "jdbc:oracle:thin:@localhost:1521/INVOICE_DB"
-      username: "INVOICE"
-      password: "ADMINPASSWORD"
-      driverClassName: "oracle.jdbc.OracleDriver"
+      url: ${DB_ORACLE_URL:jdbc:oracle:thin:@localhost:1521/INVOICE_DB}
+      username: ${DB_ORACLE_USER:INVOICE}
+      password: ${DB_ORACLE_PASS:ADMINPASSWORD}
+      driver-class-name: oracle.jdbc.OracleDriver
+
   jpa:
+    hibernate:
+      ddl-auto: ${DDL_AUTO:update}
+    postgresql:
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+    oracle:
+      database-platform: org.hibernate.dialect.OracleDialect
+    properties:
       hibernate:
-        ddl-auto: "update"
-      postgresql:
-        databasePlatform: "org.hibernate.dialect.PostgreSQLDialect"
-      oracle:
-        databasePlatform: org.hibernate.dialect.OracleDialect
-      h2:
-        console:
-          enabled: false
-          path: "/h2"
-      profiles:
-        include: null
-management:
-  endpoints:
-    web:
-      exposure:
-        include: "health,prometheus"
-  endpoint:
-    health:
-      probes:
-        enabled: true
+        dialect: ${HIBERNATE_DIALECT:org.hibernate.dialect.PostgreSQLDialect}
+        show_sql: false
+        format_sql: false
+
 cors:
-  allowed-origins: "http://localhost:4200,http://localhost:8080"
+  allowed-origins: ${CORS_ORIGINS:http://localhost:4200,http://localhost:3000}
+
+adapter:
+  restconsumer:
+    base-url: ${EXTERNAL_INVOICE_SERVICE_URL:http://localhost:8000/api/v1/}
+    connect-timeout-ms: ${CONNECT_TIMEOUT_MS:5000}
+    read-timeout-ms: ${READ_TIMEOUT_MS:10000}
+
