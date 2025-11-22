@@ -1,0 +1,17 @@
+name: ms
+
+services:
+  cost-calculator-ms:
+    container_name: cost-product
+    build:
+      context: ./ms_cost_product
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=local
+      - DEBUG=true
+    volumes:
+      - ./ms_cost_product:/app
+    working_dir: /app
+    command: uvicorn src.application.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir src --log-level debug
