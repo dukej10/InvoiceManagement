@@ -24,28 +24,26 @@ public class AmountResponseDTO {
     private InvoiceData data;
 
     private String message;
+    private String timestamp;
 
     @JsonProperty("statusCode")
     private Integer statusCode;
 
-    private LocalDateTime timestamp;
-
     @Data
-    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class InvoiceData {
         private String code;
-        private String clientId;
         private Double totalAmount;
         private List<ProductItem> products;
-        private LocalDateTime createdDate;
     }
 
     @Data
-    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     public static class ProductItem {
-        private String code;
         private String name;
         private Integer quantity;
-        private Float unitPrice;
+        private Double unitPrice;
     }
 }
