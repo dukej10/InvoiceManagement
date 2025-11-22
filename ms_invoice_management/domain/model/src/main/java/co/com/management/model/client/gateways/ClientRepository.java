@@ -3,11 +3,10 @@ package co.com.management.model.client.gateways;
 import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 
-import java.util.List;
 import java.util.UUID;
 
 public interface ClientRepository {
-    Client saveClient(Client Client);
+    Client saveClient(Client client);
 
     Client deleteClient(UUID id);
 
