@@ -90,8 +90,6 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
     @Override
     public Invoice registerInvoice(Invoice invoice, Client client) {
 
-        String invoiceCode = UUID.randomUUID().toString();
-        invoice.setCode(invoiceCode);
         invoice.setTotalAmount(100.0);
         invoice.setClientId(client.getId().toString());
         LocalDateTime now = LocalDateTime.now();
