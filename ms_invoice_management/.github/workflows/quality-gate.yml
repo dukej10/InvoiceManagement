@@ -1,10 +1,10 @@
 name: Quality Gate & SonarCloud
 
 on:
-  pull_request: 
-      types: [opened, synchronize, reopened]
-      branches:
-        - main
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches:
+      - main
 
 jobs:
   quality-and-sonar:
@@ -50,7 +50,17 @@ jobs:
             -Dsonar.sources=.
             -Dsonar.java.binaries=**/build/classes
             -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/report.xml
-            -Dsonar.exclusions=**/model/**,**/dto/**,**/config/**,**/*Config.java,**/*Application.java
+            -Dsonar.exclusions=
+              **/model/**,
+              **/dto/models/**,
+              **/consumer/dto/**,
+              **/api/config/**,
+              **/jpa/config/**,
+              **/config/**,
+              **/consumer/config/**,
+              **/api/Utility.java,
+              **/jpa/persistence/client/**
+            
             -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
             -Dsonar.pullrequest.branch=${{ github.head_ref }}
             -Dsonar.pullrequest.base=${{ github.base_ref }}
