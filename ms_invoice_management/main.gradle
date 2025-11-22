@@ -42,8 +42,17 @@ subprojects {
 
     pitest {
         targetClasses = ['co.com.management.**']
-        excludedClasses = ['co.com.management.model.**', 'co.com.management.api.dto.models.**', 'co.com.management.api.config.**', 'co.com.management.jpa.config.**',
-                           'co.com.management.config.**']
+        excludedClasses = excludedClasses = [
+                'co.com.management.model.**',
+                'co.com.management.api.dto.models.**',
+                'co.com.management.api.config.**',
+                'co.com.management.jpa.config.**',
+                'co.com.management.config.**',
+                'co.com.management.consumer.config.**',
+                'co.com.management.consumer.dto.**',
+                'co.com.management.api.Utility',
+                'co.com.management.jpa.persistence.client.**'
+        ]
         excludedTestClasses = []
         pitestVersion = '1.20.6'
         verbose = false
@@ -64,11 +73,13 @@ subprojects {
         afterEvaluate {
             classDirectories.setFrom files(classDirectories.files.collect {
                 fileTree(dir: it, excludes: [
-                    'co/com/management/model/**',
-                    'co/com/management/api/dto/models/**',
-                    'co/com/management/api/config/**',
-                    'co/com/management/jpa/config/**',
-                    'co/com/management/config/**'
+                        'co/com/management/model/**',             
+                        'co/com/management/api/dto/models/**',
+                        'co/com/management/api/config/**',
+                        'co/com/management/jpa/config/**',
+                        'co/com/management/config/**',
+                        'co.com.management/consumer/config/**',
+                        'co.com.management.consumer/config/dto/**'
                 ])
             })
         }
