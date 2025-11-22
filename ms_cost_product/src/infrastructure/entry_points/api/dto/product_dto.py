@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field, validator
 from uuid import UUID
 
 class ProductDTO(BaseModel):
-    code: UUID = Field(..., description="Código del producto")
+    code: str = Field(..., description="Código del producto")
     name: str = Field(..., min_length=1, max_length=200, description="Nombre del producto")
     quantity: int = Field(..., gt=0, description="Cantidad debe ser mayor a 0")
     unit_price: float = Field(..., alias="unitPrice", description="Precio unitario",gt=0.0)

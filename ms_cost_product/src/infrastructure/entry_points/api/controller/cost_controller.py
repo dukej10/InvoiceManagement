@@ -1,18 +1,20 @@
-from domain.usecase.price_use_case import CalculatePriceUseCase
 from fastapi import APIRouter, HTTPException, status
-from ..dto.invoice_dto import InvoiceRequestDTO
-from .....domain.model.invoice import Invoice
-from .....domain.model.product import Product
+from src.domain.usecase.price_use_case import CalculatePriceUseCase
+from src.infrastructure.entry_points.api.dto.invoice_dto import InvoiceRequestDTO
+from src.domain.model.product import Product
+from src.domain.model.invoice import Invoice
 
 router = APIRouter()
-
 usecase = CalculatePriceUseCase()
 
-@router.post("/calculate", status_code=200)
+
+@router.post("/calculate", status_code=status.HTTP_200_OK)
 async def calculate_price(request: InvoiceRequestDTO):
     try:
-        result = usecase.Executable(toModel(request))
+        invoice_model = to_model(request)
+        result = usecase.calculateAmount(invoice_model)
         return result
+
     except ValueError as ve:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -23,21 +25,17 @@ async def calculate_price(request: InvoiceRequestDTO):
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error interno del servidor"
         )
-    
-def toModel(dto: InvoiceRequestDTO): 
+
+
+def to_model(dto: InvoiceRequestDTO) -> Invoice:
     products = [
         Product(
-            code=product_dto.code,
-            name=product_dto.name,
-            quantity=product_dto.quantity,
-            unit_price=product_dto.unitPrice,
-            taxes=product_dto.taxes
+            code=p.code,
+            name=p.name,
+            quantity=p.quantity,
+            unit_price=p.unit_price,
+            taxes=p.taxes
         )
-        for product_dto in dto.products
+        for p in dto.products
     ]
-    from domain.model.invoice import Invoice
-    invoice = Invoice(
-        code=dto.code,
-        products=products
-    )
-    return invoice
+    return Invoice(code=dto.code, products=products)
