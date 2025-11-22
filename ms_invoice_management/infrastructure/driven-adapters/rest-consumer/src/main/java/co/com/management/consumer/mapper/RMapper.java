@@ -20,7 +20,7 @@ public class RMapper {
                 .map(p -> Product.builder()
                         .name(p.getName())
                         .quantity(p.getQuantity())
-                        .unitPrice(p.getUnitPrice())
+                        .unitPrice(p.getUnitPrice().doubleValue())
                         .build())
                 .toList();
 
@@ -29,7 +29,7 @@ public class RMapper {
                 .code(invoiceData.getCode())
                 .products(products)
                 .clientId(clientId)
-                .totalAmount(dto.getData().getTotalAmount())
+                .totalAmount(dto.getData().getTotalAmount().doubleValue())
                 .build();
 
     }

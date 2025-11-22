@@ -27,7 +27,6 @@ spring:
           number-list: ${ORACLE_NUMBER_LIST:PRUEBA.NUMBER_LIST}
           float-list: ${ORACLE_FLOAT_LIST:PRUEBA.FLOAT_LIST}
 
-
   jpa:
     hibernate:
       ddl-auto: ${DDL_AUTO:update}
@@ -41,12 +40,11 @@ spring:
         show_sql: false
         format_sql: false
 
+  adapter:
+    restconsumer:
+      base-url: ${EXTERNAL_INVOICE_SERVICE_URL:http://localhost:8000/api/v1}
+      connect-timeout-ms: ${CONNECT_TIMEOUT_MS:5000}
+      read-timeout-ms: ${READ_TIMEOUT_MS:10000}
+
 cors:
   allowed-origins: ${CORS_ORIGINS:http://localhost:4200,http://localhost:3000}
-
-adapter:
-  restconsumer:
-    base-url: ${EXTERNAL_INVOICE_SERVICE_URL:http://localhost:8000/api/v1}
-    connect-timeout-ms: ${CONNECT_TIMEOUT_MS:5000}
-    read-timeout-ms: ${READ_TIMEOUT_MS:10000}
-

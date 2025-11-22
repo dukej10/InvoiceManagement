@@ -9,9 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -26,7 +24,6 @@ public class AmountResponseDTO {
     private String message;
     private String timestamp;
 
-    @JsonProperty("statusCode")
     private Integer statusCode;
 
     @Data
@@ -34,7 +31,7 @@ public class AmountResponseDTO {
     @AllArgsConstructor
     public static class InvoiceData {
         private String code;
-        private Double totalAmount;
+        private BigDecimal totalAmount;
         private List<ProductItem> products;
     }
 
@@ -44,6 +41,8 @@ public class AmountResponseDTO {
     public static class ProductItem {
         private String name;
         private Integer quantity;
-        private Double unitPrice;
+
+        @JsonProperty("unitPrice")
+        private BigDecimal unitPrice;
     }
 }

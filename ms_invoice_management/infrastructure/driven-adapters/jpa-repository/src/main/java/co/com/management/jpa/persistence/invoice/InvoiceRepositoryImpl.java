@@ -44,8 +44,8 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
 
     private SimpleJdbcCall initSimpleJdbCall(JdbcTemplate jdbcTemplate) {
         return new SimpleJdbcCall(jdbcTemplate)
-                .withSchemaName(props.getSchema())           // ← desde properties
-                .withProcedureName(props.getName())          // ← desde properties
+                .withSchemaName(props.getSchema())
+                .withProcedureName(props.getName())
                 .withoutProcedureColumnMetaDataAccess()
                 .declareParameters(
                         new SqlParameter("p_invoice_code", Types.VARCHAR),
@@ -53,8 +53,6 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
                         new SqlParameter("p_total_amount", Types.DOUBLE),
                         new SqlParameter("p_client_id", Types.VARCHAR),
                         new SqlParameter("p_insert_invoice", Types.NUMERIC),
-
-                        // ← tipos 100% configurables
                         new SqlParameter("p_products_code", Types.ARRAY,
                                 props.getArrayTypes().getVarchar2List()),
                         new SqlParameter("p_products_name", Types.ARRAY,
