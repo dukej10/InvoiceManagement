@@ -20,7 +20,7 @@ public class ClientUseCase {
 
     public Client saveClient(Client client){
         Client clientFound = findByInfoDocument(client.getDocumentNumber(), client.getDocumentType());
-        if(Objects.nonNull(clientFound)) throw new DataFoundException("El cliente ya existe");
+        if(Objects.nonNull(clientFound)) throw new DataFoundException("El cliente ya se encuentra registrado");
         return clientRepository.saveClient(client);
     }
 

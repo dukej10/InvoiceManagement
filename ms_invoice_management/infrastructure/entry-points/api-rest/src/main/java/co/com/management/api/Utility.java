@@ -9,10 +9,10 @@ import java.util.Map;
 public class Utility {
 
     private static final Map<Integer, String> MESSAGE_MAP = Map.of(
-            200, "Operación exitosa",
-            400, "Solicitud inválida",
-            404, "Recurso no encontrado",
-            500, "Error interno en el servidor"
+            200, "Operation successful",
+            400, "Invalid request",
+            404, "Resource not found",
+            500, "Internal server error"
     );
 
 
