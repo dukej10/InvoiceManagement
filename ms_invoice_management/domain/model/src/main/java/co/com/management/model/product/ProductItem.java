@@ -14,5 +14,5 @@ import lombok.Setter;
 public class ProductItem {
     private String name;
     private Integer quantity;
-    private Float unitPrice;
+    private Double unitPrice;
 }

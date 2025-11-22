@@ -28,6 +28,7 @@ public class InvoiceUseCase {
         invoice.setCode(invoiceCode);
         CalculatedInvoice calculatedInvoice = toCalculatedInvoice(invoice);
         Invoice aux = calculatedInvoiceRepository.calculateInvoice(calculatedInvoice);
+        invoice.setTotalAmount(aux.getTotalAmount());
         if(Objects.isNull(clientFound)) throw new NoDataFoundException();
         try {
             return invoiceRepository.registerInvoice(invoice, clientFound);

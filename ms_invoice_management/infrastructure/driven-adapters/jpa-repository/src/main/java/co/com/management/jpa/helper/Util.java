@@ -1,5 +1,6 @@
 package co.com.management.jpa.helper;
 
+import co.com.management.jpa.config.oracle.OracleProcedureProperties;
 import co.com.management.jpa.persistence.invoice.InvoiceDao;
 import co.com.management.jpa.persistence.invoice.ProductDao;
 import co.com.management.model.PageResult;
@@ -35,7 +36,7 @@ public class Util {
     public ProductInfo structProduct(List<Product> products) {
         String[] names = products.stream().map(Product::getName).toArray(String[]::new);
         Integer[] quantities = products.stream().map(Product::getQuantity).toArray(Integer[]::new);
-        Float[] prices = products.stream().map(Product::getUnitPrice).toArray(Float[]::new);
+        Double[] prices = products.stream().map(Product::getUnitPrice).toArray(Double[]::new);
         String[] codes = products.stream().map(p -> UUID.randomUUID().toString()).toArray(String[]::new);
 
         IntStream.range(0, products.size())
@@ -44,17 +45,18 @@ public class Util {
         return new ProductInfo(names, quantities, prices, codes);
     }
 
-    public Map<String, Object> structureParams(Invoice invoice, Client client, ProductInfo productData) {
+    public Map<String, Object> structureParams(Invoice invoice, Client client, ProductInfo productData,
+                                               OracleProcedureProperties.ArrayTypes arrays) {
         return Map.of(
                 "p_invoice_code", invoice.getCode(),
                 "p_create_date", Timestamp.valueOf(invoice.getCreatedDate()),
                 "p_total_amount", BigDecimal.valueOf(invoice.getTotalAmount()),
                 "p_client_id", client.getId(),
                 "p_insert_invoice", client.getState() ? 1 : 0,
-                "p_products_code", new OracleHelper("INVOICE.VARCHAR2_LIST", productData.codes()),
-                "p_products_name", new OracleHelper("INVOICE.VARCHAR2_LIST", productData.names()),
-                "p_products_quantity", new OracleHelper("INVOICE.NUMBER_LIST", productData.quantities()),
-                "p_products_unit_price", new OracleHelper("INVOICE.FLOAT_LIST", productData.prices())
+                "p_products_code", new OracleHelper(arrays.getVarchar2List(), productData.codes()),
+                "p_products_name", new OracleHelper(arrays.getVarchar2List(), productData.names()),
+                "p_products_quantity", new OracleHelper(arrays.getNumberList(), productData.quantities()),
+                "p_products_unit_price", new OracleHelper(arrays.getFloatList(), productData.prices())
         );
     }
 
@@ -77,7 +79,7 @@ private Product toModel(ProductDao productDao) {
             .code(productDao.getCode())
             .name(productDao.getName())
             .quantity(productDao.getQuantity())
-            .unitPrice(productDao.getUnitPrice())
+            .unitPrice(Double.valueOf(productDao.getUnitPrice()))
             .build();
 }
 }

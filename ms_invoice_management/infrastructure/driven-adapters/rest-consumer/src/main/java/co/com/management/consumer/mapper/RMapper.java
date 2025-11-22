@@ -18,7 +18,6 @@ public class RMapper {
 
         List<Product> products = data.getProducts().stream()
                 .map(p -> Product.builder()
-                        .code(p.getCode())
                         .name(p.getName())
                         .quantity(p.getQuantity())
                         .unitPrice(p.getUnitPrice())
@@ -28,10 +27,9 @@ public class RMapper {
         AmountResponseDTO.InvoiceData invoiceData = dto.getData();
         return Invoice.builder()
                 .code(invoiceData.getCode())
-                .createdDate(invoiceData.getCreatedDate())
                 .products(products)
                 .clientId(clientId)
-                .totalAmount(invoiceData.getTotalAmount())
+                .totalAmount(dto.getData().getTotalAmount())
                 .build();
 
     }
@@ -45,10 +43,9 @@ public class RMapper {
                         .build())
                 .toList();
 
-        // ENVÍO PLANO → igual que espera FastAPI
         return AmountRequestDTO.builder()
-                .code(calculatedInvoice.getCode())    // ← directo
-                .products(fluid)                   // ← directo
+                .code(calculatedInvoice.getCode())
+                .products(fluid)
                 .build();
     }
 

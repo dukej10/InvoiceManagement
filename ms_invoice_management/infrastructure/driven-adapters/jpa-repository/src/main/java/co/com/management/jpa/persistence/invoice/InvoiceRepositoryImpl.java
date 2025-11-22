@@ -1,5 +1,6 @@
 package co.com.management.jpa.persistence.invoice;
 
+import co.com.management.jpa.config.oracle.OracleProcedureProperties;
 import co.com.management.jpa.helper.AdapterOperations;
 import co.com.management.jpa.helper.Util;
 import co.com.management.model.PageResult;
@@ -7,7 +8,6 @@ import co.com.management.model.ProductInfo;
 import co.com.management.model.client.Client;
 import co.com.management.model.invoice.Invoice;
 import co.com.management.model.invoice.gateways.InvoiceRepository;
-import jakarta.annotation.PostConstruct;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
@@ -23,8 +23,6 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-import java.util.UUID;
 
 @Repository
 public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao, String, InvoiceDaoRepository>
@@ -32,35 +30,43 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
 
     private final JdbcTemplate jdbcTemplate;
     private  final SimpleJdbcCall simpleJdbcCall;
-
-
-
+    private final OracleProcedureProperties props;
     public InvoiceRepositoryImpl(InvoiceDaoRepository repository, ObjectMapper mapper,
-                                 @Qualifier("oracleJdbcTemplate") JdbcTemplate jdbcTemplate) {
+                                 @Qualifier("oracleJdbcTemplate") JdbcTemplate jdbcTemplate,
+                                 OracleProcedureProperties props) {
         super(repository, mapper, d -> {
             return mapper.map(d, Invoice.class);
         });
         this.jdbcTemplate = jdbcTemplate;
+        this.props = props;
         this.simpleJdbcCall = initSimpleJdbCall(jdbcTemplate);
     }
 
     private SimpleJdbcCall initSimpleJdbCall(JdbcTemplate jdbcTemplate) {
         return new SimpleJdbcCall(jdbcTemplate)
-                .withSchemaName("INVOICE")
-                .withProcedureName("INSERT_INVOICE")
+                .withSchemaName(props.getSchema())           // ← desde properties
+                .withProcedureName(props.getName())          // ← desde properties
                 .withoutProcedureColumnMetaDataAccess()
                 .declareParameters(
                         new SqlParameter("p_invoice_code", Types.VARCHAR),
                         new SqlParameter("p_create_date", Types.TIMESTAMP),
-                        new SqlParameter("p_total_amount", Types.FLOAT),
+                        new SqlParameter("p_total_amount", Types.DOUBLE),
                         new SqlParameter("p_client_id", Types.VARCHAR),
                         new SqlParameter("p_insert_invoice", Types.NUMERIC),
-                        new SqlParameter("p_products_code", Types.ARRAY, "INVOICE.VARCHAR2_LIST"),
-                        new SqlParameter("p_products_name", Types.ARRAY, "INVOICE.VARCHAR2_LIST"),
-                        new SqlParameter("p_products_quantity", Types.ARRAY, "INVOICE.NUMBER_LIST"),
-                        new SqlParameter("p_products_unit_price", Types.ARRAY, "INVOICE.FLOAT_LIST"),
+
+                        // ← tipos 100% configurables
+                        new SqlParameter("p_products_code", Types.ARRAY,
+                                props.getArrayTypes().getVarchar2List()),
+                        new SqlParameter("p_products_name", Types.ARRAY,
+                                props.getArrayTypes().getVarchar2List()),
+                        new SqlParameter("p_products_quantity", Types.ARRAY,
+                                props.getArrayTypes().getNumberList()),
+                        new SqlParameter("p_products_unit_price", Types.ARRAY,
+                                props.getArrayTypes().getFloatList()),
+
                         new SqlOutParameter("out_invoice_id", Types.VARCHAR)
                 );
+
     }
 
     @Override
@@ -84,20 +90,16 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
         List<Invoice> invoices = getInvoices(invoicesFound);
         return Util.structureResponse(invoices, invoicesFound);
     }
-
-
-
     @Override
     public Invoice registerInvoice(Invoice invoice, Client client) {
 
-        invoice.setTotalAmount(100.0);
         invoice.setClientId(client.getId().toString());
         LocalDateTime now = LocalDateTime.now();
         invoice.setCreatedDate(now);
         try {
 
             ProductInfo p = Util.structProduct(invoice.getProducts());
-            Map<String, Object> params = Util.structureParams(invoice, client, p);
+            Map<String, Object> params = Util.structureParams(invoice, client, p, props.getArrayTypes());
             Map<String, Object> out = simpleJdbcCall.execute(params);
             String insertedInvoiceId = (String) out.get("out_invoice_id");
             invoice.setCode(insertedInvoiceId);
@@ -110,18 +112,12 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
 
     @Override
     public Invoice deleteInvoice(String id) {
-        Invoice invoice = findById(id);
-        if(Objects.nonNull(invoice)){
-            repository.deleteById(id);
-            return invoice;
-        }
         return null;
     }
 
     @Override
-    public Invoice findByClientId(String id){
-       InvoiceDao invoiceDao = repository.findByClientId(id).orElse(null);
-        return this.toEntity(invoiceDao);
+    public Invoice findByClientId(String id) {
+        return null;
     }
 
 

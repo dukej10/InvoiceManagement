@@ -1,7 +1,5 @@
 package co.com.management.api.dto.models.response;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,5 +15,5 @@ public class ProductResponseDTO {
 
     private Integer quantity;
 
-    private Float unitPrice;
+    private Double unitPrice;
 }

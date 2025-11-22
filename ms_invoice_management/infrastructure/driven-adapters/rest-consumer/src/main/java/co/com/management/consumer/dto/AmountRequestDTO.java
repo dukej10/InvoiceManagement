@@ -27,6 +27,6 @@ public class AmountRequestDTO {
         private Integer quantity;
 
         @JsonProperty("unit_price")
-        private Float unitPrice;
+        private Double unitPrice;
     }
 }

@@ -19,5 +19,5 @@ public class ProductDTO {
     private Integer quantity;
 
     @NotNull
-    private Float unitPrice;
+    private Double unitPrice;
 }

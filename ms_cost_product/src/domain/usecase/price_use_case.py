@@ -23,7 +23,7 @@ class CalculatePriceUseCase:
                 {
                     "name": p.name,
                     "quantity": p.quantity,
-                    "unitPrice": float(p.unit_price)
+                    "unitPrice": p.unit_price
                 }
                 for p in invoice.products
             ],
