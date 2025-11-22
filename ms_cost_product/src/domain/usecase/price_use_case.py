@@ -13,23 +13,20 @@ class CalculatePriceUseCase:
         total = Decimal('0.00')
         for product in invoice.products:
             subtotal = product.unit_price * product.quantity
-            total_taxes = subtotal * product.taxes / 100
-            total = Decimal(subtotal + total_taxes)
+            total = Decimal(subtotal)
 
 
         response_data = {
-            "code": 1121333,
+            "code": invoice.code,
             "totalAmount": total,
             "products": [
                 {
-                    "code": str(p.code),
                     "name": p.name,
                     "quantity": p.quantity,
                     "unitPrice": float(p.unit_price)
                 }
                 for p in invoice.products
             ],
-            "createdDate": datetime.utcnow().isoformat(timespec="milliseconds"),
         }
 
         return {

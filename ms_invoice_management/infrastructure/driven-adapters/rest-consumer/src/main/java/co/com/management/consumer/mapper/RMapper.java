@@ -35,26 +35,21 @@ public class RMapper {
                 .build();
 
     }
-  public AmountRequestDTO toDTO (CalculatedInvoice calculatedInvoice){
-        List<AmountRequestDTO.ProductItem> products = calculatedInvoice.getProducts().stream()
-                .map(p -> {
-                    AmountRequestDTO.ProductItem item = new AmountRequestDTO.ProductItem();
-                    item.setName(p.getName());
-                    item.setQuantity(p.getQuantity());
-                    item.setUnitPrice(p.getUnitPrice());
-                    return item;
-                })
+    public AmountRequestDTO toDTO(CalculatedInvoice calculatedInvoice) {
+
+        List<AmountRequestDTO.ProductItem> fluid = calculatedInvoice.getProducts().stream()
+                .map(p -> AmountRequestDTO.ProductItem.builder()
+                        .name(p.getName())
+                        .quantity(p.getQuantity())
+                        .unitPrice(p.getUnitPrice())
+                        .build())
                 .toList();
 
-        AmountRequestDTO.InvoiceData invoiceData = new AmountRequestDTO.InvoiceData();
-        invoiceData.setCode(calculatedInvoice.getCode());
-        invoiceData.setCreatedDate(calculatedInvoice.getCreatedDate());
-        invoiceData.setProducts(products);
-
-        AmountRequestDTO dto = new AmountRequestDTO();
-        dto.setData(invoiceData);
-        return dto;
-
-  }
+        // ENVÍO PLANO → igual que espera FastAPI
+        return AmountRequestDTO.builder()
+                .code(calculatedInvoice.getCode())    // ← directo
+                .products(fluid)                   // ← directo
+                .build();
+    }
 
 }
