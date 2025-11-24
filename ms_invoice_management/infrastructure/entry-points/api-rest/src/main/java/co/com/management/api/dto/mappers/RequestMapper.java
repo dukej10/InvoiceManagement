@@ -1,7 +1,6 @@
 package co.com.management.api.dto.mappers;
 
 import co.com.management.api.dto.models.request.ClientDTO;
-import co.com.management.api.dto.models.request.ClientFullDTO;
 import co.com.management.api.dto.models.request.InvoiceDTO;
 import co.com.management.api.dto.models.request.ProductDTO;
 import co.com.management.model.client.Client;
@@ -14,6 +13,7 @@ public class RequestMapper {
 
     public Client toModel(ClientDTO clientDTO){
         return Client.builder()
+                .id(clientDTO.getId())
                 .documentNumber(clientDTO.getDocumentNumber())
                 .state(clientDTO.getState())
                 .email(clientDTO.getEmail())
@@ -41,20 +41,6 @@ public class RequestMapper {
                 .name(productDTO.getName())
                 .unitPrice(productDTO.getUnitPrice())
                 .quantity(productDTO.getQuantity())
-                .build();
-    }
-
-    public Client toModelFull(ClientFullDTO clientDTO){
-        return Client.builder()
-                .id(clientDTO.getId())
-                .state(clientDTO.getState())
-                .documentNumber(clientDTO.getDocumentNumber())
-                .email(clientDTO.getEmail())
-                .address(clientDTO.getAddress())
-                .phone(clientDTO.getPhone())
-                .documentType(clientDTO.getDocumentType())
-                .lastName(clientDTO.getLastName())
-                .firstName(clientDTO.getFirstName())
                 .build();
     }
 }

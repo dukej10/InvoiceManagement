@@ -17,7 +17,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class ClientResponseFullDTO {
-    private UUID id;
+    private String id;
     private String documentNumber;
     private String documentType;
     private Boolean state;

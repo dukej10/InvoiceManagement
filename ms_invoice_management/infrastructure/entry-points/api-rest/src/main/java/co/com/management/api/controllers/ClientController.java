@@ -4,12 +4,12 @@ import co.com.management.api.Utility;
 import co.com.management.api.dto.mappers.RequestMapper;
 import co.com.management.api.dto.mappers.ResponseMapper;
 import co.com.management.api.dto.models.request.ClientDTO;
-import co.com.management.api.dto.models.request.ClientFullDTO;
 import co.com.management.usecase.client.ClientUseCase;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,11 +20,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping(value = "/client", produces = "application/json")
 @RequiredArgsConstructor
+@Validated
 public class ClientController {
 
     private final ClientUseCase clientUseCase;
@@ -39,8 +38,8 @@ public class ClientController {
     }
 
     @PutMapping(path = "/update")
-    public ResponseEntity<?> update(@Valid @RequestBody ClientFullDTO clientDTO) {
-        var client = clientUseCase.updateClient(RequestMapper.toModelFull(clientDTO));
+    public ResponseEntity<?> update(@Validated(ClientDTO.Update.class) @RequestBody ClientDTO clientDTO) {
+        var client = clientUseCase.updateClient(RequestMapper.toModel(clientDTO));
         var response = ResponseMapper.responseFull(client);
         return ResponseEntity.status(HttpStatus.CREATED).body(
                 Utility.structureRS(response, HttpStatus.OK.value())
@@ -48,7 +47,7 @@ public class ClientController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<?> deleteClientById(@PathVariable("id") UUID id) {
+    public ResponseEntity<?> deleteClientById(@PathVariable("id") String id) {
         var client = clientUseCase.deleteById(id);
         var response = ResponseMapper.responseFull(client);
         return ResponseEntity.status(HttpStatus.OK).body(
@@ -58,7 +57,7 @@ public class ClientController {
 
 
     @GetMapping(path = "{id}")
-    public ResponseEntity<?> findById(@PathVariable("id") UUID id){
+    public ResponseEntity<?> findById(@PathVariable("id") String id){
         var client = clientUseCase.getClientById(id);
         var response = ResponseMapper.response(client);
         return ResponseEntity.status(HttpStatus.FOUND).body(

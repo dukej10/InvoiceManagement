@@ -3,14 +3,12 @@ package co.com.management.model.client.gateways;
 import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 
-import java.util.UUID;
-
 public interface ClientRepository {
     Client saveClient(Client client);
 
-    Client deleteClient(UUID id);
+    Client deleteClient(String id);
 
-    Client findById(UUID id);
+    Client findById(String id);
 
     Client findByDocumentNumberAndDocumentType(String documentNumber, String documentType);
 

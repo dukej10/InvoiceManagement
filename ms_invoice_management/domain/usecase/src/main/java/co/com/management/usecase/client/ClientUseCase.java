@@ -10,7 +10,6 @@ import co.com.management.model.invoice.gateways.InvoiceRepository;
 import lombok.RequiredArgsConstructor;
 
 import java.util.Objects;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 public class ClientUseCase {
@@ -31,7 +30,7 @@ public class ClientUseCase {
     }
 
 
-    public Client getClientById(UUID id) {
+    public Client getClientById(String id) {
        Client clientFound = clientRepository.findById(id);
        return requireNonNull(clientFound);
     }
@@ -45,23 +44,19 @@ public class ClientUseCase {
             return clientRepository.findAll(page, size);
     }
 
-    public Client deleteById(UUID id) {
-        Invoice invoiceDeleted = deleteInvoice(id);
-        Client clientDeleted =  clientRepository.deleteClient(id);
-        if(Objects.isNull(clientDeleted) && Objects.isNull(invoiceDeleted)) {
-            throw new NoDataFoundException();
-        }
-        return requireNonNull(clientDeleted);
+    public Client deleteById(String code) {
+        Invoice invoiceDeleted = deleteInvoice(code);
+        return  clientRepository.deleteClient(code);
     }
 
-    private Invoice deleteInvoice(UUID id) {
-        Invoice invoiceFound = findInvoiceByClientId(id);
+    private Invoice deleteInvoice(String code) {
+        Invoice invoiceFound = findInvoiceByClientId(code);
         if(Objects.isNull(invoiceFound)) return null;
         return invoiceRepository.deleteInvoice(invoiceFound.getCode());
     }
 
-    private Invoice findInvoiceByClientId(UUID clientId) {
-        return invoiceRepository.findByClientId(clientId.toString());
+    private Invoice findInvoiceByClientId(String clientId) {
+        return invoiceRepository.findByClientId(clientId);
     }
 
     public  Client requireNonNull(Client model) {
