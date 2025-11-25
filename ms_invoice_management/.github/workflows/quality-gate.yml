@@ -3,11 +3,10 @@ name: Quality Gate & SonarCloud
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    branches:
-      - main
+    branches: [main]
 
 jobs:
-  quality-and-sonar:
+  quality:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -24,55 +23,37 @@ jobs:
           distribution: temurin
           cache: gradle
 
-      - name: Grant permission to gradlew
+      - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Run full quality (tests + JaCoCo + PITest)
-        run: ./gradlew clean quality --no-daemon --info
+      - name: Run full quality (incluye SonarCloud)
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_PROJECT_KEY: ${{ secrets.SONAR_PROJECT_KEY }}
+          SONAR_ORGANIZATION: ${{ secrets.SONAR_ORGANIZATION }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Variables para PR decoration
+          GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_HEAD_REF: ${{ github.head_ref }}
+          GITHUB_BASE_REF: ${{ github.base_ref }}
+        run: ./gradlew clean quality --info --stacktrace
 
-      - name: Upload coverage reports (optional)
+      - name: Upload coverage reports (opcional, para debug)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: coverage-reports
           path: |
-            build/reports/jacoco/html/
+            build/reports/jacoco/
             build/reports/pitest/
 
-      - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        with:
-          args: >
-            -Dsonar.projectKey=${{ secrets.SONAR_PROJECT_KEY }}
-            -Dsonar.organization=${{ secrets.SONAR_ORGANIZATION }}
-            -Dsonar.sources=.
-            -Dsonar.java.binaries=**/build/classes
-            -Dsonar.coverage.jacoco.xmlReportPaths=build/reports/jacoco/report.xml
-            -Dsonar.exclusions=
-              **/model/**,
-              **/dto/models/**,
-              **/consumer/dto/**,
-              **/api/config/**,
-              **/jpa/config/**,
-              **/config/**,
-              **/consumer/config/**,
-              **/api/Utility.java,
-              **/jpa/persistence/client/**
-            
-            -Dsonar.pullrequest.key=${{ github.event.pull_request.number }}
-            -Dsonar.pullrequest.branch=${{ github.head_ref }}
-            -Dsonar.pullrequest.base=${{ github.base_ref }}
-
-      - name: Check Quality Gate Result
+      - name: Check Quality Gate
         if: github.event_name == 'pull_request'
         run: |
-          echo "Waiting for SonarCloud Quality Gate..."
-          sleep 40
+          echo "Esperando Quality Gate..."
+          sleep 60
           STATUS=$(curl -s -u ${{ secrets.SONAR_TOKEN }}: \
             "https://sonarcloud.io/api/qualitygates/project_status?projectKey=${{ secrets.SONAR_PROJECT_KEY }}&pullRequest=${{ github.event.pull_request.number }}" \
             | jq -r '.projectStatus.status')
-          echo "Quality Gate Status: $STATUS"
+          echo "Quality Gate: $STATUS"
           [ "$STATUS" = "OK" ] && exit 0 || exit 1
-        shell: bash
