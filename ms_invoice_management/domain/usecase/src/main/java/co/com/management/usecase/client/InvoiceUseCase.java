@@ -30,8 +30,6 @@ public class InvoiceUseCase {
     }
 
     public PageResult<Invoice> getAllByClientId(String clientId, int page, int size) {
-        Client clientFound = clientUseCase.getClientById(clientId);
-
         return invoiceRepository.getAllByClientId(clientId, page, size);
     }
 
