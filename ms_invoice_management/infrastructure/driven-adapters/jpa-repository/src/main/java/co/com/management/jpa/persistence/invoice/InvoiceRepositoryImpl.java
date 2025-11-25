@@ -6,6 +6,9 @@ import co.com.management.jpa.helper.Util;
 import co.com.management.model.PageResult;
 import co.com.management.model.ProductInfo;
 import co.com.management.model.client.Client;
+import co.com.management.model.exception.DataFoundException;
+import co.com.management.model.exception.GeneralException;
+import co.com.management.model.exception.NoDataFoundException;
 import co.com.management.model.invoice.Invoice;
 import co.com.management.model.invoice.gateways.InvoiceRepository;
 import org.reactivecommons.utils.ObjectMapper;
@@ -71,6 +74,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
     public PageResult<Invoice> getAllByClientId(String id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<InvoiceDao> invoicesFound = repository.findAllByClientId(id, pageable);
+        if(invoicesFound.isEmpty()) throw new DataFoundException("No hay información");
         List<Invoice> invoices = getInvoices(invoicesFound);
         return Util.structureResponse(invoices, invoicesFound);
     }
@@ -85,13 +89,14 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
     public PageResult<Invoice> getAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<InvoiceDao> invoicesFound = repository.findAll(pageable);
+        if(invoicesFound.isEmpty()) throw new DataFoundException("No hay información");
         List<Invoice> invoices = getInvoices(invoicesFound);
         return Util.structureResponse(invoices, invoicesFound);
     }
     @Override
     public Invoice registerInvoice(Invoice invoice, Client client) {
 
-        invoice.setClientId(client.getId().toString());
+        invoice.setClientId(client.getId());
         LocalDateTime now = LocalDateTime.now();
         invoice.setCreatedDate(now);
         try {
@@ -102,7 +107,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
             String insertedInvoiceId = (String) out.get("out_invoice_id");
             invoice.setCode(insertedInvoiceId);
         } catch (Exception e) {
-            throw new RuntimeException("Error al insertar la factura: " + e.getMessage(), e);
+           throw new GeneralException("Error al insertar la factura");
         }
 
         return invoice;

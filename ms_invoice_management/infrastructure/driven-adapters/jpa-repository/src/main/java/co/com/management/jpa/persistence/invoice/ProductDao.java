@@ -23,7 +23,7 @@ import java.util.UUID;
 public class ProductDao {
 
     @Id
-    private String code;
+    private String id;
 
     @Column(name = "name_product", length = 11, nullable = false)
     private String name;

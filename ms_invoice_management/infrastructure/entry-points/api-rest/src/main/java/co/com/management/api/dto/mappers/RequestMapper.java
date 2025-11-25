@@ -27,7 +27,7 @@ public class RequestMapper {
 
     public Invoice toModel(InvoiceDTO invoiceDTO){
         return Invoice.builder()
-                .clientId(invoiceDTO.getClientId().toString())
+                .clientId(invoiceDTO.getClientId())
                 .products(
                         invoiceDTO.getProducts().stream()
                                 .map(RequestMapper::toModel)

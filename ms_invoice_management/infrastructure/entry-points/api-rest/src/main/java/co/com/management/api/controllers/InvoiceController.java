@@ -19,8 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.UUID;
-
 @RestController
 @RequestMapping(value = "/invoice", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
@@ -47,7 +45,7 @@ public class InvoiceController {
     }
 
     @GetMapping(path = "/allByClient/{clientId}")
-    public ResponseEntity<?> getAllByClient(@PathVariable("clientId") UUID clientId,
+    public ResponseEntity<?> getAllByClient(@PathVariable("clientId") String clientId,
                                             @RequestParam(name = "size", defaultValue = "1") int size,
                                             @RequestParam(name = "page", defaultValue = "0") int page){
         var client = invoiceUseCase.getAllByClientId(clientId, page, size);

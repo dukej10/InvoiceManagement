@@ -32,7 +32,7 @@ public class InvoiceDao {
 
     @Id
     @Column(length = 36)
-    private String code;
+    private String id;
 
     @Column(name="total_amount",nullable = false)
     private Double totalAmount;

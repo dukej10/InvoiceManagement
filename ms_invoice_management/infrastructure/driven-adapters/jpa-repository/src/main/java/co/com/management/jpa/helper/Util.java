@@ -48,7 +48,7 @@ public class Util {
     public Map<String, Object> structureParams(Invoice invoice, Client client, ProductInfo productData,
                                                OracleProcedureProperties.ArrayTypes arrays) {
         return Map.of(
-                "p_invoice_code", invoice.getCode(),
+                "p_invoice_code", invoice.getId(),
                 "p_create_date", Timestamp.valueOf(invoice.getCreatedDate()),
                 "p_total_amount", BigDecimal.valueOf(invoice.getTotalAmount()),
                 "p_client_id", client.getId(),
@@ -62,7 +62,7 @@ public class Util {
 
     public Invoice toModel(InvoiceDao invoiceDao) {
         return Invoice.builder()
-                .code(invoiceDao.getCode())
+                .id(invoiceDao.getId())
                 .clientId(invoiceDao.getClientId())
                 .createdDate(invoiceDao.getCreatedDate())
                 .totalAmount(invoiceDao.getTotalAmount())
@@ -76,7 +76,7 @@ public class Util {
 
 private Product toModel(ProductDao productDao) {
     return Product.builder()
-            .code(productDao.getCode())
+            .code(productDao.getId())
             .name(productDao.getName())
             .quantity(productDao.getQuantity())
             .unitPrice(Double.valueOf(productDao.getUnitPrice()))

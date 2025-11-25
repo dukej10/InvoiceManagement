@@ -16,7 +16,7 @@ import java.util.List;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Invoice {
-    private String code;
+    private String id;
     private Double totalAmount;
     private List<Product> products;
     private LocalDateTime createdDate;

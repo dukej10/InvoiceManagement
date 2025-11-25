@@ -6,16 +6,15 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
 @Builder(toBuilder = true)
 public class InvoiceResponseDTO {
 
-    private UUID code;
+    private String code;
 
-    private UUID clientId;
+    private String clientId;
 
     List<ProductResponseDTO> products;
 

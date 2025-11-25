@@ -6,7 +6,7 @@ import co.com.management.model.client.Client;
 public interface ClientRepository {
     Client saveClient(Client client);
 
-    Client deleteClient(String id);
+    void deleteClient(String id);
 
     Client findById(String id);
 

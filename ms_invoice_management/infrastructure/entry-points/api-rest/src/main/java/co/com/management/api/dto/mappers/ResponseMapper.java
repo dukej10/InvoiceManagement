@@ -11,8 +11,6 @@ import co.com.management.model.invoice.Invoice;
 import co.com.management.model.product.Product;
 import lombok.experimental.UtilityClass;
 
-import java.util.UUID;
-
 @UtilityClass
 public class ResponseMapper {
     public ClientResponseFullDTO responseFull(Client client){
@@ -46,8 +44,8 @@ public class ResponseMapper {
 
     public InvoiceResponseDTO response(Invoice invoice){
         return  InvoiceResponseDTO.builder()
-                .code(UUID.fromString(invoice.getCode()))
-                .clientId(UUID.fromString(invoice.getClientId()))
+                .code(invoice.getId())
+                .clientId(invoice.getClientId())
                 .products(invoice.getProducts().stream()
                         .map(ResponseMapper::responseFull).toList())
                 .createdDate(invoice.getCreatedDate())
@@ -64,7 +62,7 @@ public class ResponseMapper {
     }
 
     public PageResultDTO<ClientResponseFullDTO> toPageResultClientDTO(PageResult<Client> pageResult){
-        return new PageResultDTO<ClientResponseFullDTO> (
+        return new PageResultDTO<> (
                 pageResult.getItems().stream().map(ResponseMapper::responseFull).toList(),
                 pageResult.getPage(),
                 pageResult.getSize(),
@@ -76,7 +74,7 @@ public class ResponseMapper {
     }
 
     public PageResultDTO<InvoiceResponseDTO> toPageResultInvoiceDTO(PageResult<Invoice> pageResult){
-        return new PageResultDTO<InvoiceResponseDTO> (
+        return new PageResultDTO<> (
                 pageResult.getItems().stream().map(ResponseMapper::response).toList(),
                 pageResult.getPage(),
                 pageResult.getSize(),

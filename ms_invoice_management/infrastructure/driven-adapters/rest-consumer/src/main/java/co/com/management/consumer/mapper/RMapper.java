@@ -26,7 +26,7 @@ public class RMapper {
 
         AmountResponseDTO.InvoiceData invoiceData = dto.getData();
         return Invoice.builder()
-                .code(invoiceData.getCode())
+                .id(invoiceData.getCode())
                 .products(products)
                 .clientId(clientId)
                 .totalAmount(dto.getData().getTotalAmount().doubleValue())
