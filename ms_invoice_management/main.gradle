@@ -1,0 +1,170 @@
+apply plugin: 'info.solidsoft.pitest.aggregator'
+
+allprojects {
+    repositories {
+        mavenCentral()
+        maven { url = "https://repo.spring.io/snapshot" }
+        maven { url = "https://repo.spring.io/milestone" }
+    }
+}
+
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'jacoco'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'info.solidsoft.pitest'
+
+    compileJava.dependsOn validateStructure
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+
+    dependencies {
+        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        compileOnly "org.projectlombok:lombok:${lombokVersion}"
+        annotationProcessor  "org.projectlombok:lombok:${lombokVersion}"
+        testCompileOnly  "org.projectlombok:lombok:${lombokVersion}"
+        testAnnotationProcessor  "org.projectlombok:lombok:${lombokVersion}"
+        implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+    }
+
+
+    test.finalizedBy jacocoTestReport
+    jacocoTestReport.dependsOn test
+    jacocoTestReport.finalizedBy 'pitest'
+
+    pitest {
+        targetClasses = ['co.com.management.**']
+        excludedClasses = excludedClasses = [
+                'co.com.management.model.**',
+                'co.com.management.api.dto.models.**',
+                'co.com.management.api.config.**',
+                'co.com.management.jpa.config.**',
+                'co.com.management.config.**',
+                'co.com.management.consumer.config.**',
+                'co.com.management.consumer.dto.**',
+                'co.com.management.api.Utility',
+                'co.com.management.jpa.persistence.client.**'
+        ]
+        excludedTestClasses = []
+        pitestVersion = '1.20.6'
+        verbose = false
+        outputFormats = ['XML', 'HTML']
+        threads = 8
+        exportLineCoverage = true
+        useClasspathFile = true
+        timestampedReports = false
+        //mutators = ['STRONGER', 'DEFAULTS']
+        fileExtensionsToFilter.addAll('xml', 'orbit')
+        junit5PluginVersion = '1.2.3'
+        failWhenNoMutations = false
+        jvmArgs = ["-XX:+AllowRedefinitionToAddDeleteMethods"]
+    }
+
+    jacocoTestReport {
+        dependsOn test
+        afterEvaluate {
+            classDirectories.setFrom files(classDirectories.files.collect {
+                fileTree(dir: it, excludes: [
+                        'co/com/management/model/**',             
+                        'co/com/management/api/dto/models/**',
+                        'co/com/management/api/config/**',
+                        'co/com/management/jpa/config/**',
+                        'co/com/management/config/**',
+                        'co.com.management/consumer/config/**',
+                        'co.com.management.consumer/config/dto/**'
+                ])
+            })
+        }
+        reports {
+            xml.setRequired true
+            xml.setOutputLocation layout.buildDirectory.file("reports/jacoco.xml")
+            csv.setRequired false
+            html.setOutputLocation layout.buildDirectory.dir("reports/jacocoHtml")
+        }
+    }
+
+}
+
+jacoco {
+    toolVersion = "${jacocoVersion}"
+    reportsDirectory.set(layout.buildDirectory.dir("reports"))
+}
+
+tasks.register('jacocoMergedReport', JacocoReport) {
+    dependsOn subprojects.jacocoTestReport
+
+    sourceDirectories.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+    additionalSourceDirs.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+
+    executionData.from = files(subprojects.jacocoTestReport.executionData).filter { it.exists() }
+
+    def allClassDirs = files()
+    subprojects.each { proj ->
+        allClassDirs.from(proj.sourceSets.main.output)
+    }
+
+    classDirectories.from = allClassDirs.filter { it.exists() }.asFileTree.matching {
+        exclude 'co/com/management/model/**'
+        exclude 'co/com/management/api/dto/models/**'
+        exclude 'co/com/management/api/config/**'
+        exclude 'co/com/management/jpa/config/**'
+    }
+
+    reports {
+        xml.required = true
+        xml.outputLocation = file("$buildDir/reports/jacoco/report.xml")
+        html.required = true
+        html.outputLocation = file("$buildDir/reports/jacoco/html")
+        csv.required = false
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.compilerArgs = [
+            '-Amapstruct.suppressGeneratorTimestamp=true'
+    ]
+}
+
+pitestReportAggregate {
+    doLast {
+        def reportDir = layout.buildDirectory.dir("reports/pitest").get().asFile
+        def consolidatedReport = new File(reportDir, 'mutations.xml')
+        consolidatedReport.withWriter { writer ->
+            writer.write("<mutations>\n")
+            subprojects.each { subproject ->
+                def xmlReport = subproject.layout.buildDirectory.file("reports/pitest/mutations.xml").get().asFile
+                if (xmlReport.exists()) {
+                    def xmlContent = xmlReport.text
+                    xmlContent = xmlContent.replaceAll("<\\?xml[^>]*>", "")
+                    xmlContent = xmlContent.replaceAll("</?mutations( partial=\"true\")?>", "")
+                    writer.write(xmlContent.trim() + "\n")
+                }
+            }
+            writer.write("</mutations>")
+        }
+    }
+}
+
+tasks.named('wrapper') {
+    gradleVersion = '8.14.3'
+}
+
+tasks.register('pitestAll') {
+    dependsOn = subprojects.collect { it.tasks.findByName('pitest') }.findAll { it != null }
+}
+
+pitestReportAggregate {
+    dependsOn pitestAll
+}
+
+tasks.register('quality') {
+    dependsOn 'clean', 'test', 'pitestAll', 'pitestReportAggregate', 'jacocoMergedReport'
+}

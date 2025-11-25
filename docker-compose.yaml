@@ -1,7 +1,46 @@
+name: ms
+
 services:
+  cost-calculator-ms:
+    container_name: cost-product
+    build:
+      context: ./ms_cost_product
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=local
+      - DEBUG=true
+    volumes:
+      - ./ms_cost_product:/app
+    working_dir: /app
+    command: uvicorn src.application.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir src --log-level debug
+    depends_on:
+      oracle:
+        condition: service_healthy
+
+  oracle:
+    image: gvenzl/oracle-free:latest
+    container_name: oracle_latest
+    restart: unless-stopped
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: "oracle123"
+      ORACLE_DATABASE: "INVOICE_DB"
+      APP_USER: "PRUEBA"
+      APP_USER_PASSWORD: "ADMINPASSWORD"
+    # Healthcheck nuevo: usa sqlplus para verificar conexión real a la PDB
+    healthcheck:
+      test: ["CMD-SHELL", "healthcheck.sh"]
+      interval: 30s
+      timeout: 20s
+      retries: 20
+      start_period: 120s
+
   postgres:
     container_name: postgresql_invoice_management
-    image: postgres:15
+    image: postgres:15-alpine
     restart: always
     environment:
       POSTGRES_USER: admin
@@ -11,6 +50,11 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d invoice_management"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
 volumes:
   postgres_data:

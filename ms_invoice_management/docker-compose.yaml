@@ -1,0 +1,41 @@
+services:
+  oracle:
+    image: gvenzl/oracle-free:latest
+    container_name: oracle_latest
+    restart: unless-stopped
+    ports:
+      - "1521:1521"   # Conexión SQL
+    environment:
+      ORACLE_PASSWORD: "oracle123"
+      ORACLE_DATABASE: "INVOICE_DB"
+      APP_USER: "PRUEBA"
+      APP_USER_PASSWORD: "ADMINPASSWORD"
+    # volumes:
+    #   - C:\oracle\data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "pgrep", "tnslsnr"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+      start_period: 5s
+      start_interval: 5s
+  
+  postgres:
+    container_name: postgresql_invoice_management
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: invoice_management
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # depends_on:
+    #   oracle:
+    #     condition: service_healthy
+
+
+volumes:
+  postgres_data:
