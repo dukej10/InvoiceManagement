@@ -53,10 +53,10 @@ public class Util {
                 "p_total_amount", BigDecimal.valueOf(invoice.getTotalAmount()),
                 "p_client_id", client.getId(),
                 "p_insert_invoice", client.getState() ? 1 : 0,
-                "p_products_code", new OracleHelper(arrays.getVarchar2List(), productData.codes()),
-                "p_products_name", new OracleHelper(arrays.getVarchar2List(), productData.names()),
-                "p_products_quantity", new OracleHelper(arrays.getNumberList(), productData.quantities()),
-                "p_products_unit_price", new OracleHelper(arrays.getFloatList(), productData.prices())
+                "p_products_code", new OracleHelper(arrays.getVarchar2List(), productData.getCodes()),
+                "p_products_name", new OracleHelper(arrays.getVarchar2List(), productData.getNames()),
+                "p_products_quantity", new OracleHelper(arrays.getNumberList(), productData.getQuantities()),
+                "p_products_unit_price", new OracleHelper(arrays.getFloatList(), productData.getPrices())
         );
     }
 
