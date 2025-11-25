@@ -1,0 +1,15 @@
+
+services:
+  price-calculator-ms:
+    build: ./ms_cost_product
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+    environment:
+      - ENVIRONMENT=local
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - PROFILE=local
+      - MANAGEMENT_PATH_API=/api/v1
+    volumes:
+      - ./price-calculator-ms:/app
