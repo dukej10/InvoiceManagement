@@ -32,13 +32,8 @@ public class ClientRepositoryImpl extends AdapterOperations<Client, ClientDao, S
     }
 
     @Override
-    public Client deleteClient(String id) {
-        Client client = findById(id);
-        if(Objects.nonNull(client)){
-            repository.deleteById(id);
-            return client;
-        }
-        throw new NoDataFoundException();
+    public void deleteClient(String id) {
+        repository.deleteById(id);
     }
 
     @Override

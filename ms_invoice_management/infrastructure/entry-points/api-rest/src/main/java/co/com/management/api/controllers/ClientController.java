@@ -48,10 +48,9 @@ public class ClientController {
 
     @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<?> deleteClientById(@PathVariable("id") String id) {
-        var client = clientUseCase.deleteById(id);
-        var response = ResponseMapper.responseFull(client);
+        clientUseCase.deleteById(id);
         return ResponseEntity.status(HttpStatus.OK).body(
-                Utility.structureRS(response, HttpStatus.OK.value())
+                Utility.structureRS("", HttpStatus.OK.value())
         );
     }
 

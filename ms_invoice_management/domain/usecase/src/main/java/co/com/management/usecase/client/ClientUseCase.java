@@ -44,19 +44,10 @@ public class ClientUseCase {
             return clientRepository.findAll(page, size);
     }
 
-    public Client deleteById(String code) {
-        Invoice invoiceDeleted = deleteInvoice(code);
-        return  clientRepository.deleteClient(code);
-    }
-
-    private Invoice deleteInvoice(String code) {
-        Invoice invoiceFound = findInvoiceByClientId(code);
-        if(Objects.isNull(invoiceFound)) return null;
-        return invoiceRepository.deleteInvoice(invoiceFound.getCode());
-    }
-
-    private Invoice findInvoiceByClientId(String clientId) {
-        return invoiceRepository.findByClientId(clientId);
+    public void deleteById(String id) {
+        getClientById(id);
+        invoiceRepository.deleteAllByClientId(id);
+        clientRepository.deleteClient(id);
     }
 
     public  Client requireNonNull(Client model) {

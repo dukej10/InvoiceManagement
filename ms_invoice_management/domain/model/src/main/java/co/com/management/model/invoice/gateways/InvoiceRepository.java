@@ -8,12 +8,12 @@ public interface InvoiceRepository {
 
     PageResult<Invoice> getAllByClientId(String id, int page, int size);
 
-    PageResult<Invoice> getAll(int page, int size);
+    PageResult<Invoice> getAllPageable(int page, int size);
 
     Invoice registerInvoice(Invoice invoice, Client client);
 
-    Invoice deleteInvoice(String id);
+    void deleteInvoice(String id);
 
-    Invoice findByClientId(String id);
+    void deleteAllByClientId(String clientId);
 }
 

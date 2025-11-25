@@ -73,7 +73,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
     @Override
     public PageResult<Invoice> getAllByClientId(String id, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        Page<InvoiceDao> invoicesFound = repository.findAllByClientId(id, pageable);
+        Page<InvoiceDao> invoicesFound = repository.findAllPageableByClientId(id, pageable);
         if(invoicesFound.isEmpty()) throw new DataFoundException("No hay información");
         List<Invoice> invoices = getInvoices(invoicesFound);
         return Util.structureResponse(invoices, invoicesFound);
@@ -86,7 +86,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
     }
 
     @Override
-    public PageResult<Invoice> getAll(int page, int size) {
+    public PageResult<Invoice> getAllPageable(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<InvoiceDao> invoicesFound = repository.findAll(pageable);
         if(invoicesFound.isEmpty()) throw new DataFoundException("No hay información");
@@ -105,7 +105,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
             Map<String, Object> params = Util.structureParams(invoice, client, p, props.getArrayTypes());
             Map<String, Object> out = simpleJdbcCall.execute(params);
             String insertedInvoiceId = (String) out.get("out_invoice_id");
-            invoice.setCode(insertedInvoiceId);
+            invoice.setId(insertedInvoiceId);
         } catch (Exception e) {
            throw new GeneralException("Error al insertar la factura");
         }
@@ -114,13 +114,21 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
     }
 
     @Override
-    public Invoice deleteInvoice(String id) {
-        return null;
+    public void deleteInvoice(String id) {
+        repository.deleteById(id);
+    }
+
+    private List<Invoice> findAllByClientId(String id) {
+        return repository.findAllByClientId(id).stream().map(
+             this::toEntity
+        ).toList();
     }
 
     @Override
-    public Invoice findByClientId(String id) {
-        return null;
+    public void deleteAllByClientId(String clientId) {
+        List<Invoice> invoices  = findAllByClientId(clientId);
+        List<String> invoicesId = invoices.stream().map(Invoice::getId).toList();
+        repository.deleteAllById(invoicesId);
     }
 
 
