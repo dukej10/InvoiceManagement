@@ -1,13 +1,11 @@
-package co.com.management.api.config;
+package co.com.management.usecase.client;
 
 import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 import co.com.management.model.client.gateways.ClientRepository;
 import co.com.management.model.exception.DataFoundException;
 import co.com.management.model.exception.NoDataFoundException;
-import co.com.management.model.invoice.Invoice;
 import co.com.management.model.invoice.gateways.InvoiceRepository;
-import co.com.management.usecase.client.ClientUseCase;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,20 +13,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.UUID;
+import java.time.LocalDateTime;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ClienControllerTest {
+class ClientUseCaseTest {
+
     @Mock
     private ClientRepository clientRepository;
 
@@ -38,7 +32,7 @@ public class ClienControllerTest {
     @InjectMocks
     private ClientUseCase clientUseCase;
 
-    private final UUID CLIENT_ID = UUID.randomUUID();
+    private final String CLIENT_ID = "cli-12345";
     private final String DOCUMENT_NUMBER = "123456789";
     private final String DOCUMENT_TYPE = "CC";
 
@@ -52,20 +46,32 @@ public class ClienControllerTest {
                 .lastName("Pérez")
                 .build();
 
-        when(clientRepository.findByDocumentNumberAndDocumentType(DOCUMENT_NUMBER, DOCUMENT_TYPE)).thenReturn(null);
-        when(clientRepository.saveClient(any(Client.class))).thenReturn(client.toBuilder().id(CLIENT_ID).build());
+        Client savedClient = Client.builder()
+                .id(CLIENT_ID)
+                .documentNumber(DOCUMENT_NUMBER)
+                .documentType(DOCUMENT_TYPE)
+                .firstName("Juan Diego")
+                .lastName("Pérez")
+                .build();
 
-        Client saved = clientUseCase.saveClient(client);
+        when(clientRepository.findByDocumentNumberAndDocumentType(DOCUMENT_NUMBER, DOCUMENT_TYPE))
+                .thenReturn(null);
+        when(clientRepository.saveClient(any(Client.class)))
+                .thenReturn(savedClient);
 
-        assertNotNull(saved.getId());
-        verify(clientRepository).saveClient(client);
+        Client result = clientUseCase.saveClient(client);
+
+        assertEquals(CLIENT_ID, result.getId());
+        verify(clientRepository).saveClient(any(Client.class));
     }
 
     @Test
     @DisplayName("Debe lanzar DataFoundException cuando ya existe un cliente con el mismo documento")
     void saveClient_throwsDataFoundException_whenClientExists() {
         Client existingClient = Client.builder().id(CLIENT_ID).build();
-        when(clientRepository.findByDocumentNumberAndDocumentType(DOCUMENT_NUMBER, DOCUMENT_TYPE)).thenReturn(existingClient);
+
+        when(clientRepository.findByDocumentNumberAndDocumentType(DOCUMENT_NUMBER, DOCUMENT_TYPE))
+                .thenReturn(existingClient);
 
         Client newClient = Client.builder()
                 .documentNumber(DOCUMENT_NUMBER)
@@ -79,21 +85,23 @@ public class ClienControllerTest {
     @Test
     @DisplayName("Debe actualizar el cliente manteniendo la fecha de creación original")
     void updateClient_success() {
+        LocalDateTime originalDate = LocalDateTime.now().minusDays(1);
         Client existing = Client.builder()
                 .id(CLIENT_ID)
                 .firstName("Old Name")
-                .createdDate(java.time.LocalDateTime.now().minusDays(1))
+                .createdDate(originalDate)
                 .build();
 
         Client updatedInput = existing.toBuilder().firstName("New Name").build();
 
         when(clientRepository.findById(CLIENT_ID)).thenReturn(existing);
-        when(clientRepository.saveClient(any(Client.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(clientRepository.saveClient(any(Client.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
 
         Client result = clientUseCase.updateClient(updatedInput);
 
         assertEquals("New Name", result.getFirstName());
-        assertEquals(existing.getCreatedDate(), result.getCreatedDate());
+        assertEquals(originalDate, result.getCreatedDate());
         verify(clientRepository).saveClient(any(Client.class));
     }
 
@@ -119,7 +127,8 @@ public class ClienControllerTest {
     @DisplayName("Debe retornar cliente cuando existe por número y tipo de documento")
     void findByInfoDocument_returnsClient_whenExists() {
         Client client = Client.builder().documentNumber(DOCUMENT_NUMBER).build();
-        when(clientRepository.findByDocumentNumberAndDocumentType(DOCUMENT_NUMBER, DOCUMENT_TYPE)).thenReturn(client);
+        when(clientRepository.findByDocumentNumberAndDocumentType(DOCUMENT_NUMBER, DOCUMENT_TYPE))
+                .thenReturn(client);
 
         Client found = clientUseCase.findByInfoDocument(DOCUMENT_NUMBER, DOCUMENT_TYPE);
 
@@ -129,7 +138,8 @@ public class ClienControllerTest {
     @Test
     @DisplayName("Debe retornar null cuando no existe cliente por documento")
     void findByInfoDocument_returnsNull_whenNotFound() {
-        when(clientRepository.findByDocumentNumberAndDocumentType(anyString(), anyString())).thenReturn(null);
+        when(clientRepository.findByDocumentNumberAndDocumentType(anyString(), anyString()))
+                .thenReturn(null);
 
         Client found = clientUseCase.findByInfoDocument("999", "NIT");
 
@@ -148,43 +158,29 @@ public class ClienControllerTest {
     }
 
     @Test
-    @DisplayName("Debe eliminar cliente y factura cuando tiene factura asociada")
-    void deleteById_success_withInvoice() {
+    @DisplayName("Debe eliminar cliente y sus facturas asociadas")
+    void deleteById_success() {
         Client client = Client.builder().id(CLIENT_ID).build();
-        Invoice invoice = Invoice.builder().code("INV-001").clientId(CLIENT_ID.toString()).build();
 
-        when(invoiceRepository.findByClientId(CLIENT_ID.toString())).thenReturn(invoice);
-        when(invoiceRepository.deleteInvoice("INV-001")).thenReturn(invoice);
-        when(clientRepository.deleteClient(CLIENT_ID)).thenReturn(client);
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(client);
+        doNothing().when(invoiceRepository).deleteAllByClientId(CLIENT_ID);
+        doNothing().when(clientRepository).deleteClient(CLIENT_ID);
 
-        Client deleted = clientUseCase.deleteById(CLIENT_ID);
+        clientUseCase.deleteById(CLIENT_ID);
 
-        assertEquals(CLIENT_ID, deleted.getId());
-        verify(invoiceRepository).deleteInvoice("INV-001");
+        verify(invoiceRepository).deleteAllByClientId(CLIENT_ID);
         verify(clientRepository).deleteClient(CLIENT_ID);
     }
 
     @Test
-    @DisplayName("Debe eliminar solo el cliente cuando no tiene factura asociada")
-    void deleteById_success_withoutInvoice() {
-        Client client = Client.builder().id(CLIENT_ID).build();
-
-        when(invoiceRepository.findByClientId(CLIENT_ID.toString())).thenReturn(null);
-        when(clientRepository.deleteClient(CLIENT_ID)).thenReturn(client);
-
-        Client deleted = clientUseCase.deleteById(CLIENT_ID);
-
-        assertEquals(CLIENT_ID, deleted.getId());
-        verify(invoiceRepository, never()).deleteInvoice(any());
-    }
-
-    @Test
-    @DisplayName("Debe lanzar NoDataFoundException cuando no se elimina ni cliente ni factura")
-    void deleteById_throwsNoDataFoundException_whenNothingDeleted() {
-        when(invoiceRepository.findByClientId(anyString())).thenReturn(null);
-        when(clientRepository.deleteClient(CLIENT_ID)).thenReturn(null);
+    @DisplayName("Debe lanzar NoDataFoundException si no encuentra el cliente al eliminar")
+    void deleteById_throwsNoDataFoundException_whenClientNotFound() {
+        when(clientRepository.findById(CLIENT_ID)).thenReturn(null);
 
         assertThrows(NoDataFoundException.class, () -> clientUseCase.deleteById(CLIENT_ID));
+
+        verify(invoiceRepository, never()).deleteAllByClientId(anyString());
+        verify(clientRepository, never()).deleteClient(anyString());
     }
 
     @Test

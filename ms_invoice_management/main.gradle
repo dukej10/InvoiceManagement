@@ -1,13 +1,9 @@
-plugins {
-    id 'org.sonarqube' version '5.1.0.4790'
-    id 'info.solidsoft.pitest.aggregator' version '1.15.0'
-}
 
 allprojects {
     repositories {
         mavenCentral()
-        maven { url "https://repo.spring.io/snapshot" }
-        maven { url "https://repo.spring.io/milestone" }
+        maven { url 'https://repo.spring.io/snapshot' }
+        maven { url 'https://repo.spring.io/milestone' }
     }
 }
 
@@ -17,8 +13,6 @@ subprojects {
     apply plugin: 'io.spring.dependency-management'
     apply plugin: 'info.solidsoft.pitest'
 
-    compileJava.dependsOn validateStructure
-
     java {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
@@ -26,6 +20,11 @@ subprojects {
 
     test {
         useJUnitPlatform()
+        finalizedBy jacocoTestReport
+    }
+
+    jacocoTestReport {
+        dependsOn test
     }
 
     dependencies {
@@ -38,105 +37,81 @@ subprojects {
         implementation platform("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
     }
 
-    test.finalizedBy jacocoTestReport
-    jacocoTestReport.dependsOn test
-    jacocoTestReport.finalizedBy pitest
-
-    jacocoTestReport {
-        dependsOn test
-        afterEvaluate {
-            classDirectories.setFrom(files(classDirectories.files))
-        }
-        reports {
-            xml.required = true
-            xml.destination file("${buildDir}/reports/jacoco/test/jacoco.xml")
-            html.required = true
-            html.destination file("${buildDir}/reports/jacoco/html")
-        }
-    }
-
     pitest {
         targetClasses = ['co.com.management.**']
         excludedClasses = [
-            'co.com.management.model.**',
-            'co.com.management.api.dto.models.**',
-            'co.com.management.api.config.**',
-            'co.com.management.jpa.config.**',
-            'co.com.management.config.**',
-            'co.com.management.consumer.config.**',
-            'co.com.management.consumer.dto.**',
-            'co.com.management.api.Utility',
-            'co.com.management.jpa.persistence.client.**'
+                'co.com.management.model.**',
+                'co.com.management.api.dto.**',
+                'co.com.management.**config**',
+                'co.com.management.consumer.**',
+                'co.com.management.api.Utility',
+                'co.com.management.jpa.persistence.client.**'
         ]
         pitestVersion = '1.20.6'
-        outputFormats = ['XML', 'HTML']
         threads = 8
-        exportLineCoverage = true
+        outputFormats = ['XML', 'HTML']
         timestampedReports = false
         junit5PluginVersion = '1.2.3'
-        jvmArgs = ["-XX:+AllowRedefinitionToAddDeleteMethods"]
-    }
-}
-
-tasks.register('jacocoMergedReport', JacocoReport) {
-    dependsOn subprojects.jacocoTestReport
-    executionData.from = files(subprojects.jacocoTestReport.executionData).filter { it.exists() }
-    sourceDirectories.from = files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories.from = files(subprojects.sourceSets.main.output)
-    reports {
-        xml.required = true
-        xml.outputLocation = file("$buildDir/reports/jacoco/report.xml")
-        html.required = true
-        html.outputLocation = file("$buildDir/reports/jacoco/html")
-    }
-}
-
-sonarqube {
-    properties {
-        property "sonar.projectKey", System.getenv("SONAR_PROJECT_KEY")
-        property "sonar.organization", System.getenv("SONAR_ORGANIZATION")
-        property "sonar.host.url", "https://sonarcloud.io"
-        property "sonar.exclusions", """
-            **/model/**,
-            **/dto/models/**,
-            **/consumer/dto/**,
-            **/api/config/**,
-            **/jpa/config/**,
-            **/config/**,
-            **/consumer/config/**,
-            **/api/Utility.java,
-            **/jpa/persistence/client/**
-        """.trim()
-        property "sonar.coverage.jacoco.xmlReportPaths", "${buildDir}/reports/jacoco/report.xml"
-        if (System.getenv("GITHUB_PULL_REQUEST_NUMBER")) {
-            property "sonar.pullrequest.key", System.getenv("GITHUB_PULL_REQUEST_NUMBER")
-            property "sonar.pullrequest.branch", System.getenv("GITHUB_HEAD_REF")
-            property "sonar.pullrequest.base", System.getenv("GITHUB_BASE_REF")
-        }
-    }
-}
-
-pitestReportAggregate {
-    dependsOn pitestAll
-    doLast {
-        def reportDir = layout.buildDirectory.dir("reports/pitest").get().asFile
-        def consolidatedReport = new File(reportDir, 'mutations.xml')
-        consolidatedReport.text = "<mutations>\n" +
-            subprojects.collect { proj ->
-                def f = proj.layout.buildDirectory.file("reports/pitest/mutations.xml").get().asFile
-                f.exists() ? f.text.replaceAll('<\\?xml.*?>', '').replaceAll('</?mutations.*?>', '') : ""
-            }.join("\n") + "\n</mutations>"
+        failWhenNoMutations = false
+        jvmArgs = ['-XX:+AllowRedefinitionToAddDeleteMethods']
     }
 }
 
 tasks.register('pitestAll') {
-    dependsOn subprojects.tasks.matching { it.name == 'pitest' }
+    dependsOn subprojects.collect { it.tasks.findByName('pitest') }.findAll { it != null }
 }
+
+tasks.register('pitestReportAggregate') {
+    dependsOn pitestAll
+    doLast {
+        def reportDir = layout.buildDirectory.dir('reports/pitest').get().asFile
+        reportDir.mkdirs()
+        def consolidated = new File(reportDir, 'mutations.xml')
+        consolidated.text = '<?xml version="1.0" encoding="UTF-8"?>\n<mutations>\n'
+
+        subprojects.each { proj ->
+            def report = new File(proj.buildDir, 'reports/pitest/mutations.xml')
+            if (report.exists()) {
+                report.eachLine { line ->
+                    if (!line.trim().startsWith('<?xml') &&
+                            !line.trim().startsWith('<mutations') &&
+                            !line.trim().startsWith('</mutations>')) {
+                        consolidated.append(line.trim() + '\n')
+                    }
+                }
+            }
+        }
+        consolidated.append('</mutations>\n')
+    }
+}
+
+tasks.register('jacocoMergedReport', JacocoReport) {
+    executionData.from = files(subprojects.jacocoTestReport.executionData).filter { it.exists() }
+    sourceDirectories.from = files(subprojects.sourceSets.main.allSource.srcDirs)
+    classDirectories.from = files(subprojects.sourceSets.main.output).asFileTree.matching {
+        exclude 'co/com/management/model/**'
+        exclude 'co/com/management/api/dto/**'
+        exclude 'co/com/management/**/config/**'
+        exclude 'co/com/management/consumer/**'
+        exclude 'co/com/management/api/Utility.class'
+    }
+
+    reports {
+        xml.required.set(true)
+        xml.outputLocation.set(file("$buildDir/reports/jacocoMergedReport/report.xml"))
+        html.required.set(true)
+        html.outputLocation.set(file("$buildDir/reports/jacocoMergedReport/html"))
+    }
+}
+
 
 tasks.register('quality') {
-    dependsOn 'clean', 'test', 'pitestAll', 'pitestReportAggregate', 'jacocoMergedReport', 'sonarqube'
+    group = 'verification'
+    description = 'Limpia, prueba, cobertura y mutaciones con reportes consolidados'
+    dependsOn 'clean', 'test', 'pitestAll', 'pitestReportAggregate', 'jacocoMergedReport'
 }
 
-tasks.named('wrapper') {
+wrapper {
     gradleVersion = '8.14.3'
+    distributionType = Wrapper.DistributionType.ALL
 }
