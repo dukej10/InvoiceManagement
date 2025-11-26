@@ -12,7 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder(toBuilder = true)
 public class Product {
-    private String code;
+    private String id;
     private String name;
     private Integer quantity;
     private Double unitPrice;

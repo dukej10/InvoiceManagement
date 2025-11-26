@@ -40,7 +40,7 @@ public class Util {
         String[] codes = products.stream().map(p -> UUID.randomUUID().toString()).toArray(String[]::new);
 
         IntStream.range(0, products.size())
-                .forEach(i -> products.get(i).setCode(codes[i]));
+                .forEach(i -> products.get(i).setId(codes[i]));
 
         return new ProductInfo(names, quantities, prices, codes);
     }
@@ -76,7 +76,7 @@ public class Util {
 
 private Product toModel(ProductDao productDao) {
     return Product.builder()
-            .code(productDao.getId())
+            .id(productDao.getId())
             .name(productDao.getName())
             .quantity(productDao.getQuantity())
             .unitPrice(Double.valueOf(productDao.getUnitPrice()))

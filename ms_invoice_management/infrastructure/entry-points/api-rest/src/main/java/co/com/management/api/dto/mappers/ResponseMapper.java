@@ -39,12 +39,13 @@ public class ResponseMapper {
                 .email(client.getEmail())
                 .phone(client.getPhone())
                 .address(client.getAddress())
+                .invoices(client.getInvoices().stream().map(ResponseMapper::response).toList())
                 .build();
     }
 
     public InvoiceResponseDTO response(Invoice invoice){
         return  InvoiceResponseDTO.builder()
-                .code(invoice.getId())
+                .id(invoice.getId())
                 .clientId(invoice.getClientId())
                 .products(invoice.getProducts().stream()
                         .map(ResponseMapper::responseFull).toList())
@@ -54,7 +55,7 @@ public class ResponseMapper {
 
     private ProductResponseDTO responseFull(Product product){
         return ProductResponseDTO.builder()
-                .code(product.getCode())
+                .id(product.getId())
                 .name(product.getName())
                 .quantity(product.getQuantity())
                 .unitPrice(product.getUnitPrice())

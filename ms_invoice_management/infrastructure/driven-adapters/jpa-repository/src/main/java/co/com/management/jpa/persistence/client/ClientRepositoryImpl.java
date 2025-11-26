@@ -39,7 +39,7 @@ public class ClientRepositoryImpl extends AdapterOperations<Client, ClientDao, S
     @Override
     public Client findById(String id) {
         return repository.findById(id).map(this::toEntity)
-                .orElseThrow(null);
+                .orElse(null);
     }
 
     @Override

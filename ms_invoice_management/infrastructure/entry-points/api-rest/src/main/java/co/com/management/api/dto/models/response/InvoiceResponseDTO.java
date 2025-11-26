@@ -12,7 +12,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class InvoiceResponseDTO {
 
-    private String code;
+    private String id;
 
     private String clientId;
 

@@ -26,6 +26,7 @@ import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Repository
 public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao, String, InvoiceDaoRepository>
@@ -111,6 +112,13 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
         }
 
         return invoice;
+    }
+
+    @Override
+    public Invoice getById(String id) {
+        return repository.findById(id)
+                .map(this::toEntity)
+                .orElseThrow(NoDataFoundException::new);
     }
 
     @Override
