@@ -12,6 +12,8 @@ public interface InvoiceRepository {
 
     Invoice registerInvoice(Invoice invoice, Client client);
 
+    Invoice getById(String id);
+
     void deleteInvoice(String id);
 
     void deleteAllByClientId(String clientId);

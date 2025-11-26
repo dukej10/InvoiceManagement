@@ -55,4 +55,12 @@ public class InvoiceUseCase {
                 .unitPrice(product.getUnitPrice())
                 .build();
     }
+
+    public void deleteById(String id) {
+        invoiceRepository.deleteInvoice(id);
+    }
+
+    public Invoice getById(String id) {
+        return invoiceRepository.getById(id);
+    }
 }

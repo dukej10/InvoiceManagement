@@ -1,6 +1,5 @@
 package co.com.management.api.dto.models.response;
 
-import co.com.management.model.invoice.Invoice;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,5 +17,5 @@ public class ClientResponseDTO {
     private String email;
     private String phone;
     private String address;
-    private List<Invoice> invoices;
+    private List<InvoiceResponseDTO> invoices;
 }

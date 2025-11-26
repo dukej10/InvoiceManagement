@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,5 +56,23 @@ public class InvoiceController {
         );
     }
 
-}
+    @GetMapping(path = "{invoiceId}")
+    public ResponseEntity<?> getById(@PathVariable("invoiceId") String invoiceId){
+        var invoice = invoiceUseCase.getById(invoiceId);
+        var response = ResponseMapper.response(invoice);
+        return ResponseEntity.status(HttpStatus.FOUND).body(
+                Utility.structureRS(response, HttpStatus.OK.value())
+        );
+
+    }
+
+    @DeleteMapping(path = "{invoiceId}")
+    public ResponseEntity<?> deleteById(@PathVariable("invoiceId") String invoiceId){
+        invoiceUseCase.deleteById(invoiceId);
+        return ResponseEntity.status(HttpStatus.OK).body(
+                Utility.structureRS("", HttpStatus.OK.value())
+        );
+    }
+
+    }
 

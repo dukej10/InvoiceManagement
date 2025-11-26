@@ -9,7 +9,7 @@ import lombok.Setter;
 @Builder(toBuilder = true)
 public class ProductResponseDTO {
 
-    private  String code;
+    private  String id;
 
     private String name;
 
