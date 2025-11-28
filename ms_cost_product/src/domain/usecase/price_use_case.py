@@ -8,7 +8,7 @@ from src.domain.model.product import Product
 
 class CalculatePriceUseCase:
 
-    def calculateAmount(self, invoice: Invoice) -> dict:
+    def calculate_amount(self, invoice: Invoice) -> dict:
     
         total = Decimal('0.00')
         for product in invoice.products:

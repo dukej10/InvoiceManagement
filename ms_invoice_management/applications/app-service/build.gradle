@@ -1,18 +1,22 @@
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 
 dependencies {
-	implementation project(':rest-consumer')
-	implementation 'com.fasterxml.jackson.core:jackson-databind'
-	testImplementation 'org.springframework:spring-web'
-	implementation project(':api-rest')
-	implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
-	implementation project(':jpa-repository')
+	testImplementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation project(':rest-consumer')
+    implementation project(':api-rest')
+    implementation project(':jpa-repository')
     implementation project(':model')
     implementation project(':usecase')
+
     implementation 'org.springframework.boot:spring-boot-starter'
-    runtimeOnly('org.springframework.boot:spring-boot-devtools')
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'org.reactivecommons.utils:object-mapper:0.1.0'
+
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'com.tngtech.archunit:archunit:1.4.1'
-    testImplementation 'com.fasterxml.jackson.core:jackson-databind'
 }
 
 tasks.register('explodedJar', Copy) {
@@ -21,11 +25,9 @@ tasks.register('explodedJar', Copy) {
 }
 
 jar {
-    // To disable the *-plain.jar
     enabled = false
 }
 
 bootJar {
-    // Sets output jar name
     archiveFileName = "${project.getParent().getName()}.${archiveExtension.get()}"
 }
