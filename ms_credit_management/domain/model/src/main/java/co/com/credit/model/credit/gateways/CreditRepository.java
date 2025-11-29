@@ -1,12 +1,11 @@
 package co.com.credit.model.credit.gateways;
 
 import co.com.credit.model.credit.Credit;
+import reactor.core.publisher.Mono;
 
 public interface CreditRepository {
 
-    Credit openCredit(String idClient);
+    Mono<Credit> saveCredit(Credit credit);
 
-    Credit updateCredit(String idClient, Double amountInvoice);
-
-    Credit closeCredit(String idClient);
+    Mono<Credit> findByClientId(String clientId);
 }
