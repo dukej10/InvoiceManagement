@@ -12,6 +12,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.math.BigDecimal;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -45,7 +47,7 @@ public class RestConsumer implements CalculatedInvoiceRepository {
 
         return Invoice.builder()
                 .clientId(request.getClientId())
-                .totalAmount(0.0)
+                .totalAmount(BigDecimal.valueOf(0.0))
                 .build();
     }
 }

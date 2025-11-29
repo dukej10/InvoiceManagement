@@ -54,7 +54,7 @@ public class InvoiceRepositoryImpl extends AdapterOperations<Invoice, InvoiceDao
                 .declareParameters(
                         new SqlParameter("p_invoice_code", Types.VARCHAR),
                         new SqlParameter("p_create_date", Types.TIMESTAMP),
-                        new SqlParameter("p_total_amount", Types.DOUBLE),
+                        new SqlParameter("p_total_amount", Types.NUMERIC),
                         new SqlParameter("p_client_id", Types.VARCHAR),
                         new SqlParameter("p_insert_invoice", Types.NUMERIC),
                         new SqlParameter("p_products_code", Types.ARRAY,

@@ -29,7 +29,7 @@ public class RMapper {
                 .id(invoiceData.getCode())
                 .products(products)
                 .clientId(clientId)
-                .totalAmount(dto.getData().getTotalAmount().doubleValue())
+                .totalAmount(dto.getData().getTotalAmount())
                 .build();
 
     }
