@@ -10,7 +10,7 @@ usecase = CalculatePriceUseCase()
 @router.post("/calculate", status_code=status.HTTP_200_OK)
 async def calculate_price(request: InvoiceRequestDTO):
     invoice = to_model(request)
-    result = usecase.calculateAmount(invoice)
+    result = usecase.calculate_amount(invoice)
     return result
 
 
