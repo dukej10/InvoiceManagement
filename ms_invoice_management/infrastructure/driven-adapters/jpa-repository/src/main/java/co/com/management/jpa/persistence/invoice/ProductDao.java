@@ -19,6 +19,7 @@ import lombok.Setter;
 public class ProductDao {
 
     @Id
+    @Column(length = 36)
     private String id;
 
     @Column(name = "name_product", length = 11, nullable = false)
