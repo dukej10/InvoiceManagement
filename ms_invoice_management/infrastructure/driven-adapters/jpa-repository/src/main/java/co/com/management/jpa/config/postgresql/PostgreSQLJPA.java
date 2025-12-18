@@ -52,7 +52,7 @@ import java.util.Properties;
             @Value("${spring.jpa.postgresql.database-platform}") String dialect) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("co.com.management.jpa");
+        em.setPackagesToScan("co.com.management.jpa.persistence.client");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);

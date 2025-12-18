@@ -15,32 +15,29 @@ services:
       - ./ms_cost_product:/app
     working_dir: /app
     command: uvicorn src.application.main:app --host 0.0.0.0 --port 8000 --reload --reload-dir src --log-level debug
-    depends_on:
-      oracle:
-        condition: service_healthy
 
-  ms-invoice-management:
-    container_name: invoice-management
-    build:
-      context: ./ms_invoice_management
-      dockerfile: deployment/Dockerfile
-    ports:
-      - "8080:8080"
-    environment:
-      - SPRING_PROFILES_ACTIVE=local
-    volumes:
-      - ./ms_invoice_management:/app
-    depends_on:
-      postgres:
-        condition: service_healthy
-      oracle:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 20
-      start_period: 30s
+  # ms-invoice-management:
+  #   container_name: invoice-management
+  #   build:
+  #     context: ./ms_invoice_management
+  #     dockerfile: deployment/Dockerfile
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - SPRING_PROFILES_ACTIVE=local
+  #   volumes:
+  #     - ./ms_invoice_management:/app
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     oracle:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 20
+  #     start_period: 30s
 
   oracle:
     image: gvenzl/oracle-free:latest

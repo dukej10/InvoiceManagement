@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.lang.reflect.ParameterizedType;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Function;
 
 public abstract class AdapterOperations<E, D, I, R extends JpaRepository<D, I>> {

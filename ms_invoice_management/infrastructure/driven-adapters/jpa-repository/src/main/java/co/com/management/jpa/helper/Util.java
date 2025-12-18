@@ -11,7 +11,6 @@ import co.com.management.model.product.Product;
 import lombok.experimental.UtilityClass;
 import org.springframework.data.domain.Page;
 
-import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +49,7 @@ public class Util {
         return Map.of(
                 "p_invoice_code", invoice.getId(),
                 "p_create_date", Timestamp.valueOf(invoice.getCreatedDate()),
-                "p_total_amount", BigDecimal.valueOf(invoice.getTotalAmount()),
+                "p_total_amount", invoice.getTotalAmount(),
                 "p_client_id", client.getId(),
                 "p_insert_invoice", client.getState() ? 1 : 0,
                 "p_products_code", new OracleHelper(arrays.getVarchar2List(), productData.getCodes()),

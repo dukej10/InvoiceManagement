@@ -1,7 +1,7 @@
 CREATE OR REPLACE PROCEDURE INSERT_INVOICE(
     p_invoice_code        IN VARCHAR2, 
     p_create_date         IN TIMESTAMP,
-    p_total_amount        IN FLOAT,
+    p_total_amount        IN NUMERIC,
     p_client_id           IN VARCHAR2, 
     p_insert_invoice      IN NUMBER,
 	
@@ -17,13 +17,12 @@ BEGIN
 
     IF p_insert_invoice = 1 THEN
         
-        -- Usando el esquema explícito para mayor seguridad
-        INSERT INTO INVOICE.INVOICES(CODE, CLIENT_ID, CREATED_AT, TOTAL_AMOUNT)
+        INSERT INTO INVOICES(ID, CLIENT_ID, CREATED_AT, TOTAL_AMOUNT)
         VALUES(p_invoice_code, p_client_id, p_create_date, p_total_amount); 
 		
         FOR i IN 1..p_products_quantity.COUNT LOOP
             INSERT INTO PRODUCTS(
-            	CODE,
+            	ID,
             	NAME_PRODUCT,
                 QUANTITY,
                 UNIT_PRICE,

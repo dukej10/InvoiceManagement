@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -17,7 +18,7 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class Invoice {
     private String id;
-    private Double totalAmount;
+    private BigDecimal totalAmount;
     private List<Product> products;
     private LocalDateTime createdDate;
     private String clientId;
