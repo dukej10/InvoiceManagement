@@ -45,7 +45,7 @@ public class ClientRepositoryImpl extends AdapterOperations<Client, ClientDao, S
                                                       String documentType) {
         ClientDao client = repository
                 .findByDocumentNumberAndDocumentType(documentNumber, documentType)
-                .orElseThrow(NoDataFoundException::new);
+                .orElse(null);
 
         return this.toEntity(client);
     }
