@@ -21,35 +21,37 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(value = "/client", produces = "application/json")
+@RequestMapping(value = "/clients", produces = "application/json")
 @RequiredArgsConstructor
 @Validated
 public class ClientController {
 
     private final ClientUseCase clientUseCase;
+    private final RequestMapper requestMapper;
+    private final ResponseMapper responseMapper;
 
     @PostMapping(path = "/create")
     public ResponseEntity<?> save(@Valid @RequestBody ClientDTO clientDTO) {
-        var client = clientUseCase.saveClient(RequestMapper.toModel(clientDTO));
-        var response = ResponseMapper.responseFull(client);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
+        var client = clientUseCase.saveClient(requestMapper.toModel(clientDTO));
+        var response = responseMapper.responseFull(client);
+        return ResponseEntity.ok(
                 Utility.structureRS(response, HttpStatus.OK.value())
         );
     }
 
     @PutMapping(path = "/update")
     public ResponseEntity<?> update(@Validated(ClientDTO.Update.class) @RequestBody ClientDTO clientDTO) {
-        var client = clientUseCase.updateClient(RequestMapper.toModel(clientDTO));
-        var response = ResponseMapper.responseFull(client);
-        return ResponseEntity.status(HttpStatus.CREATED).body(
+        var client = clientUseCase.updateClient(requestMapper.toModel(clientDTO));
+        var response = responseMapper.responseFull(client);
+        return ResponseEntity.ok(
                 Utility.structureRS(response, HttpStatus.OK.value())
         );
     }
 
-    @DeleteMapping(path = "/delete/{id}")
+    @DeleteMapping(path = "/{id}")
     public ResponseEntity<?> deleteClientById(@PathVariable("id") String id) {
         clientUseCase.deleteById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(
+        return ResponseEntity.ok(
                 Utility.structureRS("", HttpStatus.OK.value())
         );
     }
@@ -58,26 +60,34 @@ public class ClientController {
     @GetMapping(path = "{id}")
     public ResponseEntity<?> findById(@PathVariable("id") String id){
         var client = clientUseCase.getClientById(id);
-        var response = ResponseMapper.response(client);
-        return ResponseEntity.status(HttpStatus.FOUND).body(
+        var response = responseMapper.response(client);
+        return ResponseEntity.ok(
                 Utility.structureRS(response, HttpStatus.OK.value())
         );
     }
 
-    @GetMapping(path = "/all")
-    public ResponseEntity<?> getAll(@RequestParam("size") int size, @RequestParam("page") int page){
-        var client = clientUseCase.getAll(size,page);
-        var response = ResponseMapper.toPageResultClientDTO(client);
-        return ResponseEntity.status(HttpStatus.FOUND).body(
+    @GetMapping
+    public ResponseEntity<?> getAll(
+            @RequestParam(name = "page", defaultValue = "0") int page,
+            @RequestParam(name = "size", defaultValue = "10") int size
+    ) {
+        var client = clientUseCase.getAll(size, page);
+        var response = responseMapper.toPageResultClientDTO(client);
+
+        return ResponseEntity.ok(
                 Utility.structureRS(response, HttpStatus.OK.value())
         );
     }
 
-    @GetMapping(path = "/byInfoDoc")
-    public ResponseEntity<?> getByInfoDoc(@RequestParam("num") String num, @RequestParam("type") String type){
-        var client = clientUseCase.findByInfoDocument(num,type);
-        var response = ResponseMapper.responseFull(client);
-        return ResponseEntity.status(HttpStatus.FOUND).body(
+    @GetMapping("/search")
+    public ResponseEntity<?> getByDocument(
+            @RequestParam("documentNumber") String documentNumber,
+            @RequestParam("documentType") String documentType
+    ) {
+        var client = clientUseCase.searchByInfo(documentNumber, documentType);
+        var response = responseMapper.responseFull(client);
+
+        return ResponseEntity.ok(
                 Utility.structureRS(response, HttpStatus.OK.value())
         );
     }
