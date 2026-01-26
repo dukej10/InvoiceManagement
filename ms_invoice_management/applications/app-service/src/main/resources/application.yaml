@@ -1,12 +1,18 @@
 server:
   port: ${SERVER_PORT:8080}
+  servlet:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+  tomcat:
+    uri-encoding: UTF-8
 
 spring:
   application:
     name: InvoiceManagement
   devtools:
     add-properties: false
-
 
   datasource:
     postgresql:
@@ -46,15 +52,6 @@ spring:
       base-url: ${EXTERNAL_INVOICE_SERVICE_URL:http://localhost:8000/api/v1}
       connect-timeout-ms: ${CONNECT_TIMEOUT_MS:5000}
       read-timeout-ms: ${READ_TIMEOUT_MS:10000}
-
-  http:
-    encoding:
-      charset: UTF-8
-      enabled: true
-      force: true
-      force-request: true
-      force-response: true
-
 
 cors:
   allowed-origins: ${CORS_ORIGINS:http://localhost:4200,http://localhost:3000}
