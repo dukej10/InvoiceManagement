@@ -17,5 +17,4 @@ public class ClientResponseDTO {
     private String email;
     private String phone;
     private String address;
-    private List<InvoiceResponseDTO> invoices;
 }

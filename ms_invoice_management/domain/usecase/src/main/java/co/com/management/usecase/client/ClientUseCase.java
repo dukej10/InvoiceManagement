@@ -34,9 +34,13 @@ public class ClientUseCase {
        return requireNonNull(clientFound);
     }
 
-    public Client findByInfoDocument(String documentNumber, String documentType) {
+    private Client findByInfoDocument(String documentNumber, String documentType) {
        return clientRepository.findByDocumentNumberAndDocumentType(documentNumber, documentType);
+    }
 
+    public Client searchByInfo(String documentNumber, String documentType) {
+        Client clientFound = findByInfoDocument(documentNumber, documentType);
+        return requireNonNull(clientFound);
     }
 
     public PageResult<Client> getAll(int size, int page) {
