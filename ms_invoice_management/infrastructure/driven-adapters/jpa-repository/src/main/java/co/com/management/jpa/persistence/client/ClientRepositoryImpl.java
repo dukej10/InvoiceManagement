@@ -4,7 +4,7 @@ import co.com.management.jpa.helper.AdapterOperations;
 import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 import co.com.management.model.client.gateways.ClientRepository;
-import co.com.management.model.exception.DataFoundException;
+import co.com.management.model.exception.NoDataFoundException;
 import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,17 +43,18 @@ public class ClientRepositoryImpl extends AdapterOperations<Client, ClientDao, S
     @Override
     public Client findByDocumentNumberAndDocumentType(String documentNumber,
                                                       String documentType) {
-        ClientDao client = repository.findByDocumentNumberAndDocumentType(documentNumber,
-                documentType).orElse(null);
-        return this.toEntity(client);
+        ClientDao client = repository
+                .findByDocumentNumberAndDocumentType(documentNumber, documentType)
+                .orElseThrow(NoDataFoundException::new);
 
+        return this.toEntity(client);
     }
 
     @Override
     public PageResult<Client> findAll(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<ClientDao> clientsDao = repository.findAll(pageable);
-        if(clientsDao.isEmpty()) throw new DataFoundException("No hay información");
+        if(clientsDao.isEmpty()) throw new NoDataFoundException();
         List<Client> clients = clientsDao.getContent().stream()
                 .map(this::toEntity)
                 .toList();
