@@ -1,10 +1,17 @@
 package co.com.management.api.controllers;
 
 import co.com.management.api.Utility;
+import co.com.management.api.controllers.docs.CorrectExample;
+import co.com.management.api.controllers.docs.ErrorExample;
 import co.com.management.api.dto.mappers.RequestMapper;
 import co.com.management.api.dto.mappers.ResponseMapper;
 import co.com.management.api.dto.models.request.ClientDTO;
 import co.com.management.usecase.client.ClientUseCase;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,6 +35,32 @@ public class ClientController {
 
     private final ClientUseCase clientUseCase;
 
+    @Operation(
+            summary = "Crear cliente",
+            description = "Crea un nuevo cliente en el sistema"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Cliente creado exitosamente",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "Registrar cliente",
+                                    summary = "Crear nuevo cliente",
+                                    value = CorrectExample.CLIENT_CREATE
+                            )
+                    )
+            ),
+            @ApiResponse(responseCode = "400", description = "Cliente registrado previamente",
+                    content = @Content(
+                            mediaType = "application/json",
+                            examples = @ExampleObject(
+                                    name = "Cliente ya registrado",
+                                    summary = "Error de cliente duplicado",
+                                    value = ErrorExample.CLIENT_ALREADY_EXISTS
+                            )
+                    )
+            )
+    })
     @PostMapping(path = "/create")
     public ResponseEntity<?> save(@Valid @RequestBody ClientDTO clientDTO) {
         var client = clientUseCase.saveClient(RequestMapper.toModel(clientDTO));

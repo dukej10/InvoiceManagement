@@ -2,6 +2,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 
 dependencies {
+	testImplementation 'org.springframework:spring-web'
 	testImplementation 'com.fasterxml.jackson.core:jackson-databind'
     implementation project(':rest-consumer')
     implementation project(':api-rest')
