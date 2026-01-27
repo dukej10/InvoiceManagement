@@ -21,7 +21,7 @@ import java.util.Properties;
 
 @Configuration
 @EnableJpaRepositories(
-        basePackages = "co.com.management.jpa.persistence.client", // repositorios postgres
+        basePackages = "co.com.management.jpa.persistence.personal", // repositorios postgres
         entityManagerFactoryRef = "postgresEntityManagerFactory",
         transactionManagerRef = "postgresTransactionManager"
 )public class PostgreSQLJPA {
@@ -52,7 +52,7 @@ import java.util.Properties;
             @Value("${spring.jpa.postgresql.database-platform}") String dialect) {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
         em.setDataSource(dataSource);
-        em.setPackagesToScan("co.com.management.jpa.persistence.client");
+        em.setPackagesToScan("co.com.management.jpa.persistence.personal");
 
         JpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         em.setJpaVendorAdapter(vendorAdapter);
