@@ -6,9 +6,9 @@ import co.com.management.api.dto.models.request.ProductDTO;
 import co.com.management.model.client.Client;
 import co.com.management.model.invoice.Invoice;
 import co.com.management.model.product.Product;
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
+@Component
 public class RequestMapper {
 
     public Client toModel(ClientDTO clientDTO){
@@ -30,7 +30,7 @@ public class RequestMapper {
                 .clientId(invoiceDTO.getClientId())
                 .products(
                         invoiceDTO.getProducts().stream()
-                                .map(RequestMapper::toModel)
+                                .map(this::toModel)
                                 .toList()
                 )
                 .build();
