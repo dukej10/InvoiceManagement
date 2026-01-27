@@ -2,6 +2,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-undertow'
     implementation project(':usecase')
     implementation project(':model')
+    implementation project(':security')
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'io.micrometer:micrometer-registry-prometheus'
