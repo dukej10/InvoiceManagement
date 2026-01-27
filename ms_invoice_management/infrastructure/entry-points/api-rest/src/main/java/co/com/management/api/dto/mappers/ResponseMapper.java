@@ -9,9 +9,9 @@ import co.com.management.model.PageResult;
 import co.com.management.model.client.Client;
 import co.com.management.model.invoice.Invoice;
 import co.com.management.model.product.Product;
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 
-@UtilityClass
+@Component
 public class ResponseMapper {
     public ClientResponseFullDTO responseFull(Client client){
         return  ClientResponseFullDTO.builder()
@@ -39,16 +39,15 @@ public class ResponseMapper {
                 .email(client.getEmail())
                 .phone(client.getPhone())
                 .address(client.getAddress())
-                .invoices(client.getInvoices().stream().map(ResponseMapper::response).toList())
                 .build();
     }
 
-    public InvoiceResponseDTO response(Invoice invoice){
+    public  InvoiceResponseDTO response(Invoice invoice){
         return  InvoiceResponseDTO.builder()
                 .id(invoice.getId())
                 .clientId(invoice.getClientId())
                 .products(invoice.getProducts().stream()
-                        .map(ResponseMapper::responseFull).toList())
+                        .map(this::responseFull).toList())
                 .createdDate(invoice.getCreatedDate())
                 .build();
     }
@@ -64,7 +63,7 @@ public class ResponseMapper {
 
     public PageResultDTO<ClientResponseFullDTO> toPageResultClientDTO(PageResult<Client> pageResult){
         return new PageResultDTO<> (
-                pageResult.getItems().stream().map(ResponseMapper::responseFull).toList(),
+                pageResult.getItems().stream().map(this::responseFull).toList(),
                 pageResult.getPage(),
                 pageResult.getSize(),
                 pageResult.getTotalItems(),
@@ -76,7 +75,7 @@ public class ResponseMapper {
 
     public PageResultDTO<InvoiceResponseDTO> toPageResultInvoiceDTO(PageResult<Invoice> pageResult){
         return new PageResultDTO<> (
-                pageResult.getItems().stream().map(ResponseMapper::response).toList(),
+                pageResult.getItems().stream().map(this::response).toList(),
                 pageResult.getPage(),
                 pageResult.getSize(),
                 pageResult.getTotalItems(),
