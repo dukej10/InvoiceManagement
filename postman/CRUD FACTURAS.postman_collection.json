@@ -1,0 +1,624 @@
+{
+  "info": {
+    "_postman_id": "b48a7eec-b13d-498c-b663-dcaf4f476233",
+    "name": "CRUD FACTURAS",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "10642854"
+  },
+  "item": [
+    {
+      "name": "Cliente",
+      "item": [
+        {
+          "name": "CREAR CLIENTE",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"documentNumber\": \"fgdfgfdgd\",\r\n    \"documentType\": \"CC\",\r\n    \"state\": true,\r\n    \"firstName\": \"Juan Diego\",\r\n    \"lastName\": \"Duque\",\r\n    \"email\": \"dfsf@email.com\",\r\n    \"phone\": \"3216549879\",\r\n    \"address\": \"Cra 123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}clients/create",
+              "host": [
+                "{{base-url}}clients"
+              ],
+              "path": [
+                "create"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        },
+        {
+          "name": "Actualizar cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"id\": \"{{client-id}}\",\r\n    \"documentNumber\": \"145545455\",\r\n    \"documentType\": \"CC\",\r\n    \"state\": true,\r\n    \"firstName\": \"Juan Diego\",\r\n    \"lastName\": \"Duque\",\r\n    \"email\": \"dfsf@email.com\",\r\n    \"phone\": \"3216549879\",\r\n    \"address\": \"Cra. 123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}clients/update",
+              "host": [
+                "{{base-url}}clients"
+              ],
+              "path": [
+                "update"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        },
+        {
+          "name": "ELIMINAR CLIENTE",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:8080/client/delete/87dbb88f-0fc3-4827-8212-bac9cf9e57ff",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "client",
+                "delete",
+                "87dbb88f-0fc3-4827-8212-bac9cf9e57ff"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base-url}}clients/{{client-id}}",
+              "host": [
+                "{{base-url}}clients"
+              ],
+              "path": [
+                "{{client-id}}"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener cliente por info doc",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base-url}}clients/search?documentNumber=ererwr&documentType=5456",
+              "host": [
+                "{{base-url}}clients"
+              ],
+              "path": [
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "documentNumber",
+                  "value": "ererwr"
+                },
+                {
+                  "key": "documentType",
+                  "value": "5456"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener cliente todos los cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base-url}}clients?page=0&size=1",
+              "host": [
+                "{{base-url}}clients"
+              ],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "0"
+                },
+                {
+                  "key": "size",
+                  "value": "1"
+                }
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        }
+      ],
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {},
+            "exec": [
+              ""
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Factura",
+      "item": [
+        {
+          "name": "Crear Factura",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"clientId\": \"{{client-id}}\",\r\n    \"products\": [\r\n        {\r\n            \"name\": \"uuu\",\r\n            \"quantity\": 2,\r\n            \"unitPrice\": 999.3\r\n        }\r\n    ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}invoices/create",
+              "host": [
+                "{{base-url}}invoices"
+              ],
+              "path": [
+                "create"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener factura",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base-url}}invoices/{{invoice-id}}",
+              "host": [
+                "{{base-url}}invoices"
+              ],
+              "path": [
+                "{{invoice-id}}"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener facturas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base-url}}invoices/all",
+              "host": [
+                "{{base-url}}invoices"
+              ],
+              "path": [
+                "all"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        },
+        {
+          "name": "Obtener facturas por cliente",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{access-token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base-url}}invoices/client/{{client-id}}",
+              "host": [
+                "{{base-url}}invoices"
+              ],
+              "path": [
+                "client",
+                "{{client-id}}"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Costos",
+      "item": [
+        {
+          "name": "Crear Factura",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"code\": {{client-id}},\r\n  \"products\": [\r\n    {\r\n      \"name\": \"Camiseta básica\",\r\n      \"quantity\": 3,\r\n      \"unit_price\": 15.99\r\n    }\r\n  ]\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8000/api/v1/calculate",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8000",
+              "path": [
+                "api",
+                "v1",
+                "calculate"
+              ]
+            },
+            "description": "Generated from cURL: curl -X 'GET' 'http://localhost:8080/api/all' -H 'accept: application/json'"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "AUTH",
+      "item": [
+        {
+          "name": "LOGIN",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"username\": \"admin\",\r\n    \"password\": \"admin123\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base-url}}/auth/login",
+              "host": [
+                "{{base-url}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          "// ===== SCRIPT PARA LA PESTAÑA \"Tests\" DE POSTMAN =====\r",
+          "// Solo ejecutar este script si la URL contiene /client/create\r",
+          "\r",
+          "const requestUrl = pm.request.url.toString();\r",
+          "\r",
+          "if (requestUrl.includes(\"/clients/create\")) {\r",
+          "\r",
+          "    // 1. Validar que el status sea 201\r",
+          "    pm.test(\"Status code es 201 (cliente creado)\", function () {\r",
+          "        pm.expect(pm.response.code).to.eql(201);\r",
+          "    });\r",
+          "\r",
+          "    // 2. Solo continuar si el código es 201\r",
+          "    if (pm.response.code === 200) {\r",
+          "\r",
+          "        // Parsear el JSON de la respuesta\r",
+          "        const responseJson = pm.response.json();\r",
+          "\r",
+          "        // 3. Validar que exista el campo data.id\r",
+          "        pm.test(\"La respuesta contiene data.id\", function () {\r",
+          "            pm.expect(responseJson).to.have.property(\"data\");\r",
+          "            pm.expect(responseJson.data).to.have.property(\"id\");\r",
+          "            pm.expect(responseJson.data.id)\r",
+          "                .to.be.a(\"number\")\r",
+          "                .or.a(\"string\")\r",
+          "                .and.not.empty;\r",
+          "        });\r",
+          "\r",
+          "        // 4. Guardar el ID del cliente creado en una variable de colección\r",
+          "        const clientId = responseJson.data.id;\r",
+          "        pm.collectionVariables.set(\"client-id\", clientId);\r",
+          "\r",
+          "        // 5. Mensajes de debug en consola\r",
+          "        console.log(\"Cliente creado con éxito (201)\");\r",
+          "        console.log(\"   URL:\", requestUrl);\r",
+          "        console.log(\"   client-id guardado:\", clientId);\r",
+          "\r",
+          "        // 6. Confirmar que la variable quedó guardada correctamente\r",
+          "        pm.test(\"Variable de colección 'client-id' fue actualizada correctamente\", function () {\r",
+          "            pm.expect(pm.collectionVariables.get(\"client-id\")).to.eql(clientId);\r",
+          "        });\r",
+          "\r",
+          "    } else {\r",
+          "        console.log(\"ℹ️ La petición no devolvió 201, no se guarda client-id\");\r",
+          "    }\r",
+          "} else if (requestUrl.includes(\"/invoices/create\")) {\r",
+          "    // 1. Verificar que la respuesta sea exitosa (código 200 o 201, ambos son válidos para creación)\r",
+          "    pm.test(\"Status code is 200 o 201 (creación exitosa)\", function () {\r",
+          "        pm.expect(pm.response.code).to.be.oneOf([200, 201]);\r",
+          "    });\r",
+          "\r",
+          "    // 2. Parsear el JSON de la respuesta\r",
+          "    let responseJson;\r",
+          "    responseJson = pm.response.json();\r",
+          "\r",
+          "    if (pm.response.code === 200) {\r",
+          "        \r",
+          "        // 3. Validar que exista el campo data.id\r",
+          "        pm.test(\"La respuesta contiene data.id\", function () {\r",
+          "            pm.expect(responseJson).to.have.property(\"data\");\r",
+          "            pm.expect(responseJson.data).to.have.property(\"id\");\r",
+          "            pm.expect(responseJson.data.id).to.be.a(\"number\").or.a(\"string\").and.not.empty;\r",
+          "        });\r",
+          "\r",
+          "        // 4. Guardar el ID del cliente creado en una variable de colección\r",
+          "        const invoiceId = responseJson.data.id;\r",
+          "        pm.collectionVariables.set(\"invoice-id\", invoiceId);\r",
+          "\r",
+          "        // 5. Mensajes de debug en consola\r",
+          "        console.log(\"Factura creado con éxito\", responseJson);\r",
+          "        console.log(\"   URL:\", requestUrl);\r",
+          "        console.log(\"   invoice-id guardado:\", invoiceId);\r",
+          "\r",
+          "        // 6. Test final para confirmar que la variable quedó guardada correctamente\r",
+          "        pm.test(\"Variable de colección 'invoice-id' fue actualizada correctamente\", function () {\r",
+          "            pm.expect(pm.collectionVariables.get(\"invoice-id\")).to.eql(invoiceId);\r",
+          "        });\r",
+          "    }\r",
+          "}  else if(requestUrl.includes(\"/auth/login\")) {\r",
+          "     pm.test(\"Status code is 200 o 201 (creación exitosa)\", function () {\r",
+          "        pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+          "    });\r",
+          "     // 2. Parsear el JSON de la respuesta\r",
+          "    let responseJson;\r",
+          "    responseJson = pm.response.json();\r",
+          "\r",
+          "    if (pm.response.code === 200) {\r",
+          "         pm.test(\"La respuesta contiene data.accessToken\", function () {\r",
+          "            pm.expect(responseJson).to.have.property(\"data\");\r",
+          "            pm.expect(responseJson.data).to.have.property(\"accessToken\");\r",
+          "            pm.expect(responseJson.data.accessToken).to.be.a(\"string\").and.not.empty;\r",
+          "        });\r",
+          "\r",
+          "\r",
+          "        const accessToken = responseJson.data.accessToken;\r",
+          "        pm.collectionVariables.set(\"access-token\", accessToken);\r",
+          "\r",
+          "        // 5. Mensajes de debug en consola\r",
+          "        console.log(\"Factura creado con éxito\", responseJson);\r",
+          "        console.log(\"   URL:\", requestUrl);\r",
+          "        console.log(\"   access-token:\", accessToken);\r",
+          "\r",
+          "        pm.test(\"Variable de colección 'access-token' fue actualizada correctamente\", function () {\r",
+          "            pm.expect(pm.collectionVariables.get(\"access-token\")).to.eql(accessToken);\r",
+          "        });\r",
+          "    }\r",
+          "}"
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "client-id",
+      "value": ""
+    },
+    {
+      "key": "invoice-id",
+      "value": ""
+    },
+    {
+      "key": "base-url",
+      "value": ""
+    },
+    {
+      "key": "access-token",
+      "value": ""
+    }
+  ]
+}
