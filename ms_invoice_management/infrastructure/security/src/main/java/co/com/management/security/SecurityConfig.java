@@ -50,8 +50,8 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
-
+                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/signup").hasRole("ADMIN")
                         .requestMatchers("/clients/**").hasAnyRole("ADMIN", "USER")
                         .requestMatchers("/invoices/**").hasRole("ADMIN")
 

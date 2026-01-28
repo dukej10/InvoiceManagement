@@ -39,7 +39,7 @@ public class ClientDao {
 
     private Boolean state;
 
-    @Column(length = 25, nullable = false)
+    @Column(length = 50, nullable = false)
     private String email;
 
     @Column(length = 80, nullable = false)

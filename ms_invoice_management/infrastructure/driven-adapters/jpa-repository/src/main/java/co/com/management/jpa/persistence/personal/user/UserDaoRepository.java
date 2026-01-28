@@ -15,5 +15,5 @@ public interface UserDaoRepository extends JpaRepository<UserDao, String> {
   """)
     Optional<UserDao> findByUsernameWithRoles(@Param("username") String username);
 
-    Optional<UserDao> findByUsername(String username);
+    boolean existsByUsername(String username);
 }

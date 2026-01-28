@@ -7,14 +7,19 @@ import org.reactivecommons.utils.ObjectMapper;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class UserRepositoryImpl extends AdapterOperations<User, UserDao, String, UserDaoRepository>
 implements UserRepository {
-    protected UserRepositoryImpl(UserDaoRepository repository, ObjectMapper mapper) {
-        super(repository, mapper, d -> {
-            return mapper.map(d, User.class);
-        });
+
+    private final RolesDaoRepository rolesDaoRepository;
+
+    protected UserRepositoryImpl(UserDaoRepository repository,
+                                 RolesDaoRepository rolesDaoRepository,
+                                 ObjectMapper mapper) {
+        super(repository, mapper, d -> mapper.map(d, User.class));
+        this.rolesDaoRepository = rolesDaoRepository;
     }
 
     @Override
@@ -28,5 +33,29 @@ implements UserRepository {
                             .toList());
                     return user;
                 });
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return repository.existsByUsername(username);
+    }
+
+    @Override
+    public User save(User user) {
+        Set<RolesDao> roles = user.getRoles().stream()
+                .map(rolesDaoRepository::findByName)
+                .collect(java.util.stream.Collectors.toSet());
+
+        UserDao dao = new UserDao();
+        dao.setUsername(user.getUsername());
+        dao.setPassword(user.getPassword());
+        dao.setEnabled(Boolean.TRUE);
+        dao.setRoles(roles);
+
+        UserDao savedDao = repository.save(dao);
+
+        User saved = mapper.map(savedDao, User.class);
+        saved.setRoles(savedDao.getRoles().stream().map(RolesDao::getName).toList());
+        return saved;
     }
 }

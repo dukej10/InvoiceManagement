@@ -29,7 +29,7 @@ public class AuthController {
 
 
     @PostMapping(path = "/login")
-    public ResponseEntity<?> save(@Valid @RequestBody LoginDTO loginDTO) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginDTO loginDTO) {
         var user = loginUseCase.login(
                 loginDTO.getUsername(),
                 loginDTO.getPassword()
@@ -38,6 +38,17 @@ public class AuthController {
         var response = responseMapper.toLoginRSDTO(token);
         return ResponseEntity.ok(
                 Utility.structureRS(response, HttpStatus.OK.value())
+        );
+    }
+
+    @PostMapping(path = "/signup")
+    public ResponseEntity<?> save(@Valid @RequestBody LoginDTO loginDTO) {
+        var user = loginUseCase.register(
+                loginDTO.getUsername(),
+                loginDTO.getPassword()
+        );
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                Utility.structureRS("Usuario registrado", HttpStatus.CREATED.value())
         );
     }
 }
